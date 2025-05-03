@@ -20,15 +20,12 @@ public partial class Product
     [Column(TypeName = "money")]
     public decimal Price { get; set; }
 
-    public int? ImageId { get; set; }
-
     public int? CategoryId { get; set; }
 
     [ForeignKey("CategoryId")]
     [InverseProperty("Products")]
     public virtual Category? Category { get; set; }
 
-    [ForeignKey("ImageId")]
-    [InverseProperty("Products")]
-    public virtual Image? Image { get; set; }
+    [InverseProperty("Product")]
+    public virtual ICollection<Image> Images { get; set; } = new List<Image>();
 }

@@ -17,6 +17,9 @@ public partial class Image
 
     public bool? IsMain { get; set; }
 
-    [InverseProperty("Image")]
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+    public int? ProductId { get; set; }
+
+    [ForeignKey("ProductId")]
+    [InverseProperty("Images")]
+    public virtual Product? Product { get; set; }
 }

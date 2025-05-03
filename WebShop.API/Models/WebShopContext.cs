@@ -42,7 +42,7 @@ public partial class WebShopContext : DbContext
     {
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Cart__3214EC07FE03A04B");
+            entity.HasKey(e => e.Id).HasName("PK__Cart__3214EC075320B34A");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
 
@@ -58,31 +58,31 @@ public partial class WebShopContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC07C5340704");
+            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC07BDCD114F");
         });
 
         modelBuilder.Entity<Country>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Country__3214EC07D6A1BD93");
+            entity.HasKey(e => e.Id).HasName("PK__Country__3214EC0771E2CEBD");
         });
 
         modelBuilder.Entity<Image>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Image__3214EC073A084F37");
+            entity.HasKey(e => e.Id).HasName("PK__Image__3214EC077466F786");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Images).HasConstraintName("FK__Image__ProductId__5535A963");
         });
 
         modelBuilder.Entity<Log>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Log__3214EC071276EEB5");
+            entity.HasKey(e => e.Id).HasName("PK__Log__3214EC07A71BB778");
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Product__3214EC078C2FE801");
+            entity.HasKey(e => e.Id).HasName("PK__Product__3214EC076958F014");
 
-            entity.HasOne(d => d.Category).WithMany(p => p.Products).HasConstraintName("FK__Product__Categor__5535A963");
-
-            entity.HasOne(d => d.Image).WithMany(p => p.Products).HasConstraintName("FK__Product__ImageId__5441852A");
+            entity.HasOne(d => d.Category).WithMany(p => p.Products).HasConstraintName("FK__Product__Categor__52593CB8");
         });
 
         modelBuilder.Entity<ProductCountry>(entity =>
@@ -94,16 +94,16 @@ public partial class WebShopContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC07CFDDC957");
+            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC072627BA0A");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__User__3214EC07819B9563");
+            entity.HasKey(e => e.Id).HasName("PK__User__3214EC07FB97A308");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__User__RoleId__4D94879B");
+                .HasConstraintName("FK__User__RoleId__4BAC3F29");
         });
 
         OnModelCreatingPartial(modelBuilder);
