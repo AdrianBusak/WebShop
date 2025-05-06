@@ -9,6 +9,8 @@ namespace WebShop.API.Profiles
         public MappingProfile()
         {
             CreateMap<Product, ProductDto>().ReverseMap();
+            CreateMap<Image, ImageResponseDto>().ReverseMap();
+            CreateMap<Image, ImageCreateDto>().ReverseMap();
         }
     }
 }
