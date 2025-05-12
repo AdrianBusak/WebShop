@@ -23,11 +23,6 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                if (!_context.Images.Any())
-                {
-                    return NotFound();
-                }
-
                 var images = _context.Images
                     .Where(x => x.ProductId == productId)
                     .Select(image => _mapper.Map<ImageResponseDto>(image))
@@ -35,7 +30,7 @@ namespace WebShop.API.Controllers
 
                 return Ok(images);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }
@@ -75,7 +70,7 @@ namespace WebShop.API.Controllers
 
                 return Ok(imageDto);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }
@@ -83,7 +78,7 @@ namespace WebShop.API.Controllers
 
         // PUT api/<ImageController>/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] ImageCreateDto imageDto)
+        public ActionResult Put(int id, [FromBody] ImageUpdateDto imageDto)
         {
             try
             {

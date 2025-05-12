@@ -20,17 +20,12 @@ namespace WebShop.API.Controllers
 
         // GET: api/<ProductsController>
         [HttpGet]
-        public ActionResult<IEnumerable<ProductDto>> GetAll()
+        public ActionResult<IEnumerable<ProductResponseDto>> GetAll()
         {
             try
             {
-                if (!_context.Products.Any())
-                {
-                    return NotFound();
-                }
-
                 var products = _context.Products
-                    .Select(x => _mapper.Map<ProductDto>(x))
+                    .Select(x => _mapper.Map<ProductResponseDto>(x))
                     .ToList();
 
                 return Ok(products);
@@ -44,7 +39,7 @@ namespace WebShop.API.Controllers
 
         // GET api/<ProductsController>/5
         [HttpGet("{id}")]
-        public ActionResult<ProductDto> Get(int id)
+        public ActionResult<ProductResponseDto> Get(int id)
         {
             try
             {
@@ -53,7 +48,7 @@ namespace WebShop.API.Controllers
                 {
                     return NotFound();
                 }
-                var productDto = _mapper.Map<ProductDto>(product);
+                var productDto = _mapper.Map<ProductResponseDto>(product);
 
                 return Ok(productDto);
             }
@@ -65,7 +60,7 @@ namespace WebShop.API.Controllers
 
         // POST api/<ProductsController>
         [HttpPost]
-        public ActionResult Post([FromBody] ProductDto productDto)
+        public ActionResult Post([FromBody] ProductCreateDto productDto)
         {
             try
             {
@@ -87,7 +82,7 @@ namespace WebShop.API.Controllers
 
         // PUT api/<ProductsController>/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] ProductDto productDto)
+        public ActionResult Put(int id, [FromBody] ProductUpdateDto productDto)
         {
             try
             {
@@ -114,11 +109,14 @@ namespace WebShop.API.Controllers
 
         // DELETE api/<ProductsController>/5
         [HttpDelete("{id}")]
-        public ActionResult<ProductDto> Delete(int id)
+        public ActionResult<ProductResponseDto> Delete(int id)
         {
+            var product = new Product();
+
             try
             {
-                var product = _context.Products.FirstOrDefault(x => x.Id == id);
+                product = _context.Products.FirstOrDefault(x => x.Id == id);
+             
                 if (product == null)
                 {
                     return NotFound();
@@ -126,15 +124,15 @@ namespace WebShop.API.Controllers
 
                 _context.Products.Remove(product);
                 _context.SaveChanges();
-
-                var productDto = _mapper.Map<ProductDto>(product);
-
-                return Ok(productDto);
             }
             catch (Exception)
             {
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }
+
+                var productDto = _mapper.Map<ProductResponseDto>(product);
+
+                return Ok(productDto);
         }
     }
 }

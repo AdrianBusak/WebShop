@@ -1,11 +1,14 @@
-﻿namespace WebShop.API.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebShop.API.DTOs
 {
-    public class ProductDto
+    public class ProductUpdateDto
     {
+ 
+        [Required]
         public string Name { get; set; } = null!;
-
         public string? Description { get; set; }
-
+        [Required]
         public decimal Price { get; set; }
 
         public int? CategoryId { get; set; }

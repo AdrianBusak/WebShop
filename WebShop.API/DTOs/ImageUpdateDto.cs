@@ -2,7 +2,7 @@
 
 namespace WebShop.API.DTOs
 {
-    public class ImageCreateDto
+    public class ImageUpdateDto
     {
         [Required]
         public string Content { get; set; } = null!;
