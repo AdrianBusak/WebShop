@@ -96,6 +96,28 @@ namespace WebShop.API.Controllers
             }
         }
 
+        [HttpGet("{id}/details")]
+        public ActionResult<ProductDetailDto> GetProductDetails(int id)
+        {
+            try
+            {
+                var product = _context.Products
+                        .Include(p => p.Category)
+                        .Include(p => p.Images)
+                        .FirstOrDefault(p => p.Id == id);
+
+                if (product == null)
+                    return NotFound();
+
+                var dto = _mapper.Map<ProductDetailDto>(product);
+                return Ok(dto);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
+            }
+        }
+
 
         // POST api/<ProductsController>
         [HttpPost]

@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebShop.API.Models;
 
@@ -18,6 +21,9 @@ public partial class Product
     public decimal Price { get; set; }
 
     public int? CategoryId { get; set; }
+
+    [StringLength(256)]
+    public string? Brand { get; set; }
 
     [ForeignKey("CategoryId")]
     [InverseProperty("Products")]

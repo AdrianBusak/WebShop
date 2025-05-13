@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebShop.API.Models;
 
@@ -13,6 +16,9 @@ public partial class Cart
     public DateTime? CreatedAt { get; set; }
 
     public int? UserId { get; set; }
+
+    [Column(TypeName = "decimal(18, 0)")]
+    public decimal? TotalPrice { get; set; }
 
     [ForeignKey("UserId")]
     [InverseProperty("Carts")]

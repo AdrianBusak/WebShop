@@ -11,6 +11,8 @@ namespace WebShop.API.Profiles
             CreateMap<Product, ProductResponseDto>().ReverseMap();
             CreateMap<Product, ProductCreateDto>().ReverseMap();
             CreateMap<Product, ProductUpdateDto>().ReverseMap();
+            CreateMap<Product, ProductDetailDto>().ReverseMap();
+
 
             CreateMap<Image, ImageResponseDto>().ReverseMap();
             CreateMap<Image, ImageCreateDto>().ReverseMap();
