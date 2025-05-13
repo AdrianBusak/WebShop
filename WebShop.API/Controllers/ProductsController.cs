@@ -36,6 +36,25 @@ namespace WebShop.API.Controllers
             }
 
         }
+        // GET: api/<ProductsController>
+        [HttpGet("product/{categoryId}")]
+        public ActionResult<IEnumerable<ProductResponseDto>> GetAll(int categoryId)
+        {
+            try
+            {
+                var products = _context.Products
+                    .Where(x => x.CategoryId == categoryId)
+                    .Select(x => _mapper.Map<ProductResponseDto>(x))
+                    .ToList();
+
+                return Ok(products);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
+            }
+
+        }
 
         // GET api/<ProductsController>/5
         [HttpGet("{id}")]
@@ -57,6 +76,26 @@ namespace WebShop.API.Controllers
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }
         }
+
+        [HttpGet("in-country/{countryId}")]
+        public ActionResult<List<ProductResponseDto>> GetProductsInCountry(int countryId)
+        {
+            try
+            {
+                var products = _context.ProductCountries
+                        .Where(pc => pc.CountryId == countryId)
+                        .Include(pc => pc.Product)
+                        .Select(pc => _mapper.Map<ProductResponseDto>(pc.Product))
+                        .ToList();
+
+                return Ok(products);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
+            }
+        }
+
 
         // POST api/<ProductsController>
         [HttpPost]
@@ -121,6 +160,9 @@ namespace WebShop.API.Controllers
                 {
                     return NotFound();
                 }
+
+                var images = _context.Images.Where(img => img.ProductId == id).ToList();
+                _context.Images.RemoveRange(images);
 
                 _context.Products.Remove(product);
                 _context.SaveChanges();

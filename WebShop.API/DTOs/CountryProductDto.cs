@@ -1,0 +1,8 @@
+﻿namespace WebShop.API.DTOs
+{
+    public class CountryProductDto
+    {
+        public int ProductId { get; set; }
+        public int CountryId { get; set; }
+    }
+}

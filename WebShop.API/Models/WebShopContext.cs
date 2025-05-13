@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace WebShop.API.Models;
 
@@ -90,6 +88,8 @@ public partial class WebShopContext : DbContext
             entity.HasOne(d => d.Country).WithMany().HasConstraintName("FK__ProductCo__Count__571DF1D5");
 
             entity.HasOne(d => d.Product).WithMany().HasConstraintName("FK__ProductCo__Produ__5812160E");
+            
+            entity.HasKey(pc => new { pc.ProductId, pc.CountryId });
         });
 
         modelBuilder.Entity<Role>(entity =>
