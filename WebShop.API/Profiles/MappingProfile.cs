@@ -25,6 +25,9 @@ namespace WebShop.API.Profiles
             CreateMap<Country, CountryUpdateDto>().ReverseMap();
 
             CreateMap<ProductCountry, CountryProductDto>().ReverseMap();
+
+            CreateMap<User, UserRegisterDto>().ReverseMap();
+            CreateMap<User, UserRegisterDto>().ReverseMap();
         }
     }
 }
