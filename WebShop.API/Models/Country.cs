@@ -14,4 +14,7 @@ public partial class Country
 
     [StringLength(256)]
     public string Name { get; set; } = null!;
+
+    [InverseProperty("Country")]
+    public virtual ICollection<ProductCountry> ProductCountries { get; set; } = new List<ProductCountry>();
 }

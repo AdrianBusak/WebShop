@@ -25,10 +25,16 @@ public partial class Product
     [StringLength(256)]
     public string? Brand { get; set; }
 
+    [InverseProperty("Product")]
+    public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+
     [ForeignKey("CategoryId")]
     [InverseProperty("Products")]
     public virtual Category? Category { get; set; }
 
     [InverseProperty("Product")]
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();
+
+    [InverseProperty("Product")]
+    public virtual ICollection<ProductCountry> ProductCountries { get; set; } = new List<ProductCountry>();
 }

@@ -135,7 +135,7 @@ namespace WebShop.API.Controllers
                     productDto
                 );
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }

@@ -20,6 +20,9 @@ public partial class Cart
     [Column(TypeName = "decimal(18, 0)")]
     public decimal? TotalPrice { get; set; }
 
+    [InverseProperty("Cart")]
+    public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+
     [ForeignKey("UserId")]
     [InverseProperty("Carts")]
     public virtual User? User { get; set; }

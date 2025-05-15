@@ -51,9 +51,13 @@ public partial class WebShopContext : DbContext
 
         modelBuilder.Entity<CartItem>(entity =>
         {
-            entity.HasOne(d => d.Cart).WithMany().HasConstraintName("FK__CartItem__CartId__5DCAEF64");
+            entity.HasKey(e => e.Id).HasName("PK__CartItem__3214EC072C4A81B6");
 
-            entity.HasOne(d => d.Product).WithMany().HasConstraintName("FK__CartItem__Produc__5EBF139D");
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.HasOne(d => d.Cart).WithMany(p => p.CartItems).HasConstraintName("FK__CartItem__CartId__5DCAEF64");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.CartItems).HasConstraintName("FK__CartItem__Produc__5EBF139D");
         });
 
         modelBuilder.Entity<Category>(entity =>
@@ -87,9 +91,11 @@ public partial class WebShopContext : DbContext
 
         modelBuilder.Entity<ProductCountry>(entity =>
         {
-            entity.HasOne(d => d.Country).WithMany().HasConstraintName("FK__ProductCo__Count__571DF1D5");
+            entity.HasKey(e => e.Id).HasName("PK__ProductC__3214EC070AAE5503");
 
-            entity.HasOne(d => d.Product).WithMany().HasConstraintName("FK__ProductCo__Produ__5812160E");
+            entity.HasOne(d => d.Country).WithMany(p => p.ProductCountries).HasConstraintName("FK__ProductCo__Count__571DF1D5");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductCountries).HasConstraintName("FK__ProductCo__Produ__5812160E");
         });
 
         modelBuilder.Entity<Role>(entity =>

@@ -62,13 +62,20 @@ namespace WebShop.API.Controllers
         [HttpGet("for-product/{productId}")]
         public ActionResult<List<CountryResponseDto>> GetCountriesForProduct(int productId)
         {
-            var countries = _context.ProductCountries
-                .Where(pc => pc.ProductId == productId)
-                .Include(pc => pc.Country)
-                .Select(pc => _mapper.Map<CountryResponseDto>(pc.Country))
-                .ToList();
+            try
+            {
+                var countries = _context.ProductCountries
+                        .Where(pc => pc.ProductId == productId)
+                        .Include(pc => pc.Country)
+                        .Select(pc => _mapper.Map<CountryResponseDto>(pc.Country))
+                        .ToList();
 
-            return Ok(countries);
+                return Ok(countries);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "message");
+            }
         }
 
 

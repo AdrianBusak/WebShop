@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebShop.API.Models;
 
-[Keyless]
 [Table("CartItem")]
 public partial class CartItem
 {
@@ -19,9 +18,15 @@ public partial class CartItem
     [Column(TypeName = "decimal(18, 0)")]
     public decimal? UnitPrice { get; set; }
 
+    [Key]
+    [Column(TypeName = "decimal(18, 0)")]
+    public decimal Id { get; set; }
+
     [ForeignKey("CartId")]
+    [InverseProperty("CartItems")]
     public virtual Cart? Cart { get; set; }
 
     [ForeignKey("ProductId")]
+    [InverseProperty("CartItems")]
     public virtual Product? Product { get; set; }
 }
