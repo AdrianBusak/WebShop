@@ -30,6 +30,13 @@ namespace WebShop.API.Profiles
 
             CreateMap<User, UserRegisterDto>().ReverseMap();
             CreateMap<User, UserRegisterDto>().ReverseMap();
+
+            CreateMap<Cart, CartResponseDto>().ReverseMap();
+            
+            CreateMap<CartItem, CartItemDto>().ReverseMap();
+            CreateMap<CartItem, CartResponseDto>().ReverseMap();
+            CreateMap<CartItem, CartItemCreateDto>().ReverseMap();
+            CreateMap<CartItem, CartItemUpdateDto>().ReverseMap();
         }
     }
 }
