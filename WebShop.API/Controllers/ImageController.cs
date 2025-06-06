@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using WebShop.API.DTOs;
 using WebShop.DAL.Models;
+using WebShop.DAL.Repositories.ImageRepo;
+using WebShop.DAL.Services.ImageServices;
 
 namespace WebShop.API.Controllers
 {
@@ -9,11 +11,11 @@ namespace WebShop.API.Controllers
     [ApiController]
     public class ImageController : ControllerBase
     {
-        private readonly WebShopContext _context;
+        private readonly IImageService _imageService;
         private readonly IMapper _mapper;
-        public ImageController(WebShopContext context, IMapper mapper)
+        public ImageController(IImageService imageService, IMapper mapper)
         {
-            _context = context;
+            _imageService = imageService;
             _mapper = mapper;
         }
 
@@ -23,8 +25,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var images = _context.Images
-                    .Where(x => x.ProductId == productId)
+                var images = _imageService.GetAllByProductId(productId)
                     .Select(image => _mapper.Map<ImageResponseDto>(image))
                     .ToList();
 
@@ -42,7 +43,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var image = _context.Images.FirstOrDefault(x => x.Id == id);
+                var image = _imageService.GetById(id);
                 if (image == null)
                 {
                     return NotFound();
@@ -65,8 +66,7 @@ namespace WebShop.API.Controllers
             try
             {
                 var image = _mapper.Map<Image>(imageDto);
-                _context.Images.Add(image);
-                _context.SaveChanges();
+                _imageService.Create(image);
 
                 return Ok(imageDto);
             }
@@ -82,7 +82,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var image = _context.Images.FirstOrDefault(x => x.Id == id);
+                var image = _imageService.GetById(id);
                 if (image == null)
                 {
                     return NotFound();
@@ -90,7 +90,8 @@ namespace WebShop.API.Controllers
 
                 _mapper.Map(imageDto, image);
 
-                _context.SaveChanges();
+                _imageService.Update(image);
+
                 return NoContent();
             }
             catch (Exception)
@@ -105,14 +106,13 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var image = _context.Images.FirstOrDefault(x => x.Id == id);
+                var image = _imageService.GetById(id);
                 if (image == null)
                 {
                     return NotFound();
                 }
 
-                _context.Images.Remove(image);
-                _context.SaveChanges();
+                _imageService.Delete(image);
 
                 var imageDto = _mapper.Map<ImageResponseDto>(image);
 

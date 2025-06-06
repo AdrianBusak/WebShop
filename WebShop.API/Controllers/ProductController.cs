@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebShop.API.DTOs;
 using WebShop.DAL.Models;
+using WebShop.DAL.Repositories.ProductRepo;
+using WebShop.DAL.Services.ProductService;
 
 namespace WebShop.API.Controllers
 {
@@ -10,11 +12,11 @@ namespace WebShop.API.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly WebShopContext _context;
+        private readonly IProductService _productService;
         private readonly IMapper _mapper;
-        public ProductController(WebShopContext context, IMapper mapper)
+        public ProductController(IProductService productService, IMapper mapper)
         {
-            _context = context;
+            _productService = productService;
             _mapper = mapper;
         }
 
@@ -24,7 +26,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var products = _context.Products
+                var products = _productService.GetAll()
                     .Select(x => _mapper.Map<ProductResponseDto>(x))
                     .ToList();
 
@@ -42,8 +44,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var products = _context.Products
-                    .Where(x => x.CategoryId == categoryId)
+                var products = _productService.GetByCategoryId(categoryId)
                     .Select(x => _mapper.Map<ProductResponseDto>(x))
                     .ToList();
 
@@ -62,7 +63,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var product = _context.Products.FirstOrDefault(p => p.Id == id);
+                var product = _productService.GetById(id);
                 if (product == null)
                 {
                     return NotFound();
@@ -82,10 +83,8 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var products = _context.ProductCountries
-                        .Where(pc => pc.CountryId == countryId)
-                        .Include(pc => pc.Product)
-                        .Select(pc => _mapper.Map<ProductResponseDto>(pc.Product))
+                var products = _productService.GetInCountry(countryId)
+                        .Select(pc => _mapper.Map<ProductResponseDto>(pc))
                         .ToList();
 
                 return Ok(products);
@@ -101,10 +100,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var product = _context.Products
-                        .Include(p => p.Category)
-                        .Include(p => p.Images)
-                        .FirstOrDefault(p => p.Id == id);
+                var product = _productService.GetWithDetails(id);
 
                 if (product == null)
                     return NotFound();
@@ -126,8 +122,7 @@ namespace WebShop.API.Controllers
             try
             {
                 var product = _mapper.Map<Product>(productDto);
-                _context.Products.Add(product);
-                _context.SaveChanges();
+                _productService.Create(product);
 
                 return CreatedAtAction(
                     nameof(Get),
@@ -147,8 +142,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var product = _context.Products
-                       .FirstOrDefault(x => x.Id == id);
+                var product = _productService.GetById(id);
 
                 if (product == null)
                 {
@@ -156,8 +150,8 @@ namespace WebShop.API.Controllers
                 }
 
                 _mapper.Map(productDto, product);
+                _productService.Update(product);
 
-                _context.SaveChanges();
                 return Ok();
             }
             catch (Exception)
@@ -176,27 +170,23 @@ namespace WebShop.API.Controllers
 
             try
             {
-                product = _context.Products.FirstOrDefault(x => x.Id == id);
-             
+                product = _productService.GetById(id);
+
                 if (product == null)
                 {
                     return NotFound();
                 }
 
-                var images = _context.Images.Where(img => img.ProductId == id).ToList();
-                _context.Images.RemoveRange(images);
-
-                _context.Products.Remove(product);
-                _context.SaveChanges();
+                _productService.Delete(product);
             }
             catch (Exception)
             {
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }
 
-                var productDto = _mapper.Map<ProductResponseDto>(product);
+            var productDto = _mapper.Map<ProductResponseDto>(product);
 
-                return Ok(productDto);
+            return Ok(productDto);
         }
     }
 }

@@ -85,7 +85,7 @@ namespace WebShop.API.Controllers
             {
                 if (_countryService.GetAll().Any(c => c.Name.ToLower() == country.Name.ToLower()))
                 {
-                    return BadRequest("A genre with the same name already exists.");
+                    return BadRequest("A country with the same name already exists.");
                 }
 
                 var newCountry = _mapper.Map<Country>(country);

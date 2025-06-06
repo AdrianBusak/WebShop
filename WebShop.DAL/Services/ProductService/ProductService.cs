@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.DAL.Models;
+using WebShop.DAL.Repositories.ImageRepo;
 using WebShop.DAL.Repositories.ProductRepo;
 
 namespace WebShop.DAL.Services.ProductService
@@ -11,10 +12,12 @@ namespace WebShop.DAL.Services.ProductService
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepo;
+        private readonly IImageRepository _imageRepo;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository, IImageRepository imageRepository)
         {
             _productRepo = productRepository;
+            _imageRepo = imageRepository;
         }
 
         public IEnumerable<Product> GetAll() => _productRepo.GetAll();
@@ -41,6 +44,8 @@ namespace WebShop.DAL.Services.ProductService
 
         public void Delete(Product product)
         {
+            _imageRepo.DeleteRange(product.Images);
+
             _productRepo.Delete(product);
             _productRepo.Save();
         }
