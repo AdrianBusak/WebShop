@@ -1,10 +1,17 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using WebShop.API.Models;
 using WebShop.API.Profiles;
+using WebShop.DAL.Models;
+using WebShop.DAL.Repositories.CartRepo;
+using WebShop.DAL.Repositories.CategoryRepo;
+using WebShop.DAL.Repositories.ProductRepo;
+using WebShop.DAL.Services.CartServices;
+using WebShop.DAL.Services.CategoryServices;
+using WebShop.DAL.Services.ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +22,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<WebShopContext>();
+builder.Services.AddDbContext<WebShopContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 

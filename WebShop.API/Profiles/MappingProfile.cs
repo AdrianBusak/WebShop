@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using WebShop.API.DTOs;
-using WebShop.API.Models;
+using WebShop.DAL.Models;
 
 namespace WebShop.API.Profiles
 {

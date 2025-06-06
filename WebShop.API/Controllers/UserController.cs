@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebShop.API.Models;
 using WebShop.API.DTOs;
-using WebShop.API.Security;
 using AutoMapper;
+using WebShop.DAL.Models;
+using WebShop.DAL.Security;
 
 
 namespace WebShop.API.Controllers

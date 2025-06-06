@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebShop.API.DTOs;
-using WebShop.API.Models;
+using WebShop.DAL.Models;
+using WebShop.DAL.Services.CartServices;
 
 namespace WebShop.API.Controllers
 {
@@ -12,12 +13,12 @@ namespace WebShop.API.Controllers
     [Route("api/[controller]")]
     public class CartController : ControllerBase
     {
-        private readonly WebShopContext _context;
+        private readonly ICartService _cartService;
         private readonly IMapper _mapper;
 
-        public CartController(WebShopContext context, IMapper mapper)
+        public CartController(ICartService cartService, IMapper mapper)
         {
-            _context = context;
+            _cartService = cartService;
             _mapper = mapper;
         }
 
@@ -27,8 +28,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var carts = _context.Carts
-                       .Include(c => c.CartItems)
+                var carts = _cartService.GetAll()
                        .Select(c => _mapper.Map<CartResponseDto>(c))
                        .ToList();
 
@@ -50,9 +50,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var cart = _context.Carts
-                       .Include(c => c.CartItems)
-                       .FirstOrDefault(c => c.UserId == userId);
+                var cart = _cartService.GetByUserId(userId);
 
                 if (cart == null)
                 {
@@ -73,46 +71,15 @@ namespace WebShop.API.Controllers
         [HttpPost("{userId}/items")]
         public ActionResult AddToCart(int userId, CartItemCreateDto request)
         {
-            var product = _context.Products.Find(request.ProductId);
-            if (product == null)
+            try
             {
-                return NotFound("Product not found.");
+                _cartService.AddToCart(userId, request.ProductId, request.Quantity);
+                return NoContent();
             }
-
-            var cart = _context.Carts
-                .Include(c => c.CartItems)
-                .FirstOrDefault(c => c.UserId == userId);
-
-            if (cart == null)
+            catch (Exception)
             {
-                cart = new Cart
-                {
-                    UserId = userId,
-                    CreatedAt = DateTime.UtcNow,
-                    CartItems = new List<CartItem>()
-                };
-                _context.Carts.Add(cart);
-                _context.SaveChanges();
+                return StatusCode(500, "message");
             }
-
-            var item = cart.CartItems.FirstOrDefault(i => i.ProductId == request.ProductId);
-            if (item != null)
-            {
-                item.Quantity += request.Quantity;
-            }
-            else
-            {
-                var cartItem = _mapper.Map<CartItem>(request);
-                cartItem.CartId = cart.Id;
-                cartItem.UnitPrice = product.Price;
-
-                cart.CartItems.Add(cartItem);
-            }
-
-            cart.TotalPrice = cart.CartItems.Sum(i => i.Quantity * i.UnitPrice);
-            _context.SaveChanges();
-
-            return NoContent();
         }
 
         // PUT: api/cart/{userId}/items
@@ -121,25 +88,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var cart = _context.Carts
-                        .Include(c => c.CartItems)
-                        .FirstOrDefault(c => c.UserId == userId);
-
-                if (cart == null)
-                {
-                    return NotFound();
-                }
-
-                var item = cart.CartItems.FirstOrDefault(i => i.ProductId == request.ProductId);
-                if (item == null)
-                {
-                    return NotFound("Item not found in cart.");
-                }
-
-                item.Quantity = request.Quantity;
-
-                cart.TotalPrice = cart.CartItems.Sum(i => i.Quantity * i.UnitPrice);
-                _context.SaveChanges();
+                _cartService.UpdateItem(userId, request.ProductId, request.Quantity);
 
                 return NoContent();
             }
@@ -155,31 +104,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var cart = _context.Carts
-                        .Include(c => c.CartItems)
-                        .FirstOrDefault(c => c.UserId == userId);
-
-                if (cart == null)
-                {
-                    return NotFound();
-                }
-
-                var item = cart.CartItems.FirstOrDefault(i => i.ProductId == productId);
-                if (item == null)
-                {
-                    return NotFound("Item not found in the cart.");
-                }
-                if(item.Quantity > 1)
-                {
-                    item.Quantity--;
-                }
-                else
-                {
-                    _context.CartItems.Remove(item);
-                }
-
-                cart.TotalPrice = cart.CartItems.Sum(i => i.Quantity * i.UnitPrice);
-                _context.SaveChanges();
+                _cartService.RemoveItem(userId, productId);
 
                 return Ok();
             }
@@ -195,18 +120,7 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var cart = _context.Carts
-                        .Include(c => c.CartItems)
-                        .FirstOrDefault(c => c.UserId == userId);
-
-                if (cart == null)
-                {
-                    return NotFound();
-                }
-
-                cart.CartItems.Clear();
-                cart.TotalPrice = 0;
-                _context.SaveChanges();
+                _cartService.ClearCart(userId);
 
                 return Ok();
             }
