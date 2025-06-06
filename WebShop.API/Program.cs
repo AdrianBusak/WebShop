@@ -8,9 +8,11 @@ using WebShop.API.Profiles;
 using WebShop.DAL.Models;
 using WebShop.DAL.Repositories.CartRepo;
 using WebShop.DAL.Repositories.CategoryRepo;
+using WebShop.DAL.Repositories.CountryRepo;
 using WebShop.DAL.Repositories.ProductRepo;
 using WebShop.DAL.Services.CartServices;
 using WebShop.DAL.Services.CategoryServices;
+using WebShop.DAL.Services.CountryServices;
 using WebShop.DAL.Services.ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +34,8 @@ builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 
 
 

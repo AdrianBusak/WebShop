@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebShop.API.DTOs;
 using WebShop.DAL.Models;
+using WebShop.DAL.Services.CountryServices;
 
 namespace WebShop.API.Controllers
 {
@@ -10,21 +11,21 @@ namespace WebShop.API.Controllers
     [ApiController]
     public class CountryController : ControllerBase
     {
-        private readonly WebShopContext _context;
+        private readonly ICountryService _countryService;
         private readonly IMapper _mapper;
-        public CountryController(WebShopContext context, IMapper mapper)
+        public CountryController(ICountryService countryService, IMapper mapper)
         {
-            _context = context;
+            _countryService = countryService;
             _mapper = mapper;
         }
 
         // GET: api/<CountriesController>
         [HttpGet]
-        public ActionResult<IEnumerable<CountryResponseDto>> Get()
+        public ActionResult<IEnumerable<CountryResponseDto>> GetAll()
         {
             try
             {
-                var countries = _context.Countries
+                var countries = _countryService.GetAll()
                     .Select(x => _mapper.Map<CountryResponseDto>(x))
                     .ToList();
 
@@ -42,16 +43,15 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var country = _context.Countries
-                    .Where(x => x.Id == id)
-                    .Select(x => _mapper.Map<CountryResponseDto>(x))
-                    .FirstOrDefault();
+                var country = _countryService.GetById(id);
 
-                if (country == null)
+                var countryResponse = _mapper.Map<CountryResponseDto>(country);
+
+                if (countryResponse == null)
                 {
                     return NotFound();
                 }
-                return Ok(country);
+                return Ok(countryResponse);
             }
             catch (Exception)
             {
@@ -64,10 +64,8 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var countries = _context.ProductCountries
-                        .Where(pc => pc.ProductId == productId)
-                        .Include(pc => pc.Country)
-                        .Select(pc => _mapper.Map<CountryResponseDto>(pc.Country))
+                var countries = _countryService.GetForProduct(productId)
+                        .Select(pc => _mapper.Map<CountryResponseDto>(pc))
                         .ToList();
 
                 return Ok(countries);
@@ -85,15 +83,14 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                if (_context.Countries.Any(c => c.Name.ToLower() == country.Name.ToLower()))
+                if (_countryService.GetAll().Any(c => c.Name.ToLower() == country.Name.ToLower()))
                 {
                     return BadRequest("A genre with the same name already exists.");
                 }
 
                 var newCountry = _mapper.Map<Country>(country);
 
-                _context.Countries.Add(newCountry);
-                _context.SaveChanges();
+                _countryService.Create(newCountry);
 
                 return CreatedAtAction(nameof(Get), new { id = newCountry.Id }, newCountry);
             }
@@ -111,7 +108,7 @@ namespace WebShop.API.Controllers
 
             try
             {
-                var existingCountry = _context.Countries.FirstOrDefault(c => c.Id == id);
+                var existingCountry = _countryService.GetById(id);
                 if (existingCountry == null)
                 {
                     return NotFound();
@@ -119,7 +116,7 @@ namespace WebShop.API.Controllers
 
                 _mapper.Map(country, existingCountry);
 
-                _context.SaveChanges();
+                _countryService.Update(existingCountry);
                 return NoContent();
             }
             catch (Exception)
@@ -135,14 +132,13 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var country = _context.Countries.FirstOrDefault(c => c.Id == id);
+                var country = _countryService.GetById(id);
                 if (country == null)
                 {
                     return NotFound();
                 }
 
-                _context.Countries.Remove(country);
-                _context.SaveChanges();
+                _countryService.Delete(country);
                 return NoContent();
             }
             catch (Exception)
