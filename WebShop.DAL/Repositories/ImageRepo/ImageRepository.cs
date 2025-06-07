@@ -46,6 +46,7 @@ namespace WebShop.DAL.Repositories.ImageRepo
                 _context.Images.RemoveRange(images);
                 _context.SaveChanges();
             }
-    }
+        }
 
+    }
 }

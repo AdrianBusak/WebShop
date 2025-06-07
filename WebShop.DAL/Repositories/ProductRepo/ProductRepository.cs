@@ -16,15 +16,18 @@ namespace WebShop.DAL.Repositories.ProductRepo
             _context = context;
         }
         public IEnumerable<Product> GetAll() =>
-            _context.Products.ToList();
+            _context.Products
+            .ToList();
 
         public IEnumerable<Product> GetByCategoryId(int categoryId) =>
-            _context.Products.Where(p => p.CategoryId == categoryId).ToList();
+            _context.Products
+            .Where(p => p.CategoryId == categoryId)
+            .ToList();
 
         public Product? GetById(int id) =>
             _context.Products.FirstOrDefault(p => p.Id == id);
 
-        public IEnumerable<Product> GetInCountry(int countryId) =>
+        public IEnumerable<Product?> GetInCountry(int countryId) =>
             _context.ProductCountries
                 .Include(pc => pc.Product)
                 .Where(pc => pc.CountryId == countryId)
