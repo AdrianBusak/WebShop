@@ -10,12 +10,16 @@ using WebShop.DAL.Repositories.CartRepo;
 using WebShop.DAL.Repositories.CategoryRepo;
 using WebShop.DAL.Repositories.CountryRepo;
 using WebShop.DAL.Repositories.ImageRepo;
+using WebShop.DAL.Repositories.ProductCountryRepo;
 using WebShop.DAL.Repositories.ProductRepo;
+using WebShop.DAL.Repositories.UserRepo;
 using WebShop.DAL.Services.CartServices;
 using WebShop.DAL.Services.CategoryServices;
 using WebShop.DAL.Services.CountryServices;
 using WebShop.DAL.Services.ImageServices;
+using WebShop.DAL.Services.ProductCountryServices;
 using WebShop.DAL.Services.ProductService;
+using WebShop.DAL.Services.UserServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +44,11 @@ builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IProductCountryRepository, ProductCountryRepository>();
+builder.Services.AddScoped<IProductCountryService, ProductCountryService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 
 
 

@@ -9,9 +9,9 @@ namespace WebShop.DAL.Models;
 [Table("ProductCountry")]
 public partial class ProductCountry
 {
-    public int? CountryId { get; set; }
+    public int CountryId { get; set; }
 
-    public int? ProductId { get; set; }
+    public int ProductId { get; set; }
 
     [Key]
     public int Id { get; set; }

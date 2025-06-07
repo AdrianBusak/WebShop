@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using WebShop.API.DTOs;
 using WebShop.DAL.Models;
+using WebShop.DAL.Repositories.ProductCountryRepo;
+using WebShop.DAL.Services.ProductCountryServices;
 
 namespace WebShop.API.Controllers
 {
@@ -11,12 +13,12 @@ namespace WebShop.API.Controllers
     [Route("api/[controller]")]
     public class ProductCountriesController : ControllerBase
     {
-        private readonly WebShopContext _context;
+        private readonly IProductCountryService _service;
         private readonly IMapper _mapper;
 
-        public ProductCountriesController(WebShopContext context, IMapper mapper)
+        public ProductCountriesController(IProductCountryService service, IMapper mapper)
         {
-            _context = context;
+            _service = service;
             _mapper = mapper;
         }
 
@@ -26,16 +28,14 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var exists = _context.ProductCountries
-                        .Any(pc => pc.ProductId == dto.ProductId && pc.CountryId == dto.CountryId);
+                var exists = _service.Get(dto.ProductId, dto.CountryId) != null;
 
                 if (exists)
                     return BadRequest("This product is already linked to that country.");
 
                 var productCountry = _mapper.Map<ProductCountry>(dto);
 
-                _context.ProductCountries.Add(productCountry);
-                _context.SaveChanges();
+                _service.Link(productCountry.ProductId, productCountry.CountryId);
                 return Ok("Linked successfully.");
             }
             catch (Exception)
@@ -50,14 +50,12 @@ namespace WebShop.API.Controllers
         {
             try
             {
-                var pc = _context.ProductCountries
-                       .FirstOrDefault(pc => pc.ProductId == dto.ProductId && pc.CountryId == dto.CountryId);
+                var pc = _service.Get(dto.ProductId, dto.CountryId);
 
                 if (pc == null)
                     return NotFound();
 
-                _context.ProductCountries.Remove(pc);
-                _context.SaveChanges();
+                _service.Unlink(pc.ProductId, pc.CountryId);
                 return Ok("Unlinked successfully.");
             }
             catch (Exception)
