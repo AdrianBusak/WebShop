@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using WebShop.API.DTOs;
 using WebShop.DAL.Models;
 using WebShop.DAL.Repositories.ProductRepo;
+using WebShop.DAL.Services.LogServices;
 using WebShop.DAL.Services.ProductService;
 
 namespace WebShop.API.Controllers
@@ -14,10 +15,12 @@ namespace WebShop.API.Controllers
     {
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
-        public ProductController(IProductService productService, IMapper mapper)
+        private readonly ILogService _logService;
+        public ProductController(IProductService productService, IMapper mapper, ILogService logService)
         {
             _productService = productService;
             _mapper = mapper;
+            _logService = logService;
         }
 
         // GET: api/<ProductsController>
@@ -30,10 +33,25 @@ namespace WebShop.API.Controllers
                     .Select(x => _mapper.Map<ProductResponseDto>(x))
                     .ToList();
 
+                Log log = new Log()
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "INFO",
+                    Message = "Retrieved all products from the database."
+                };
+
+                _logService.Add(log);
                 return Ok(products);
             }
             catch (Exception)
             {
+                Log errorLog = new Log()
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "ERROR",
+                    Message = "An error occurred while retrieving products."
+                };
+                _logService.Add(errorLog);
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }
 
@@ -48,10 +66,25 @@ namespace WebShop.API.Controllers
                     .Select(x => _mapper.Map<ProductResponseDto>(x))
                     .ToList();
 
+                Log log = new Log()
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "INFO",
+                    Message = $"Retrieved products for category ID {categoryId} from the database."
+                };
+                _logService.Add(log);
+
                 return Ok(products);
             }
             catch (Exception)
             {
+                Log errorLog = new Log()
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "ERROR",
+                    Message = "An error occurred while retrieving products by category."
+                };
+                _logService.Add(errorLog);
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }
 
@@ -70,10 +103,25 @@ namespace WebShop.API.Controllers
                 }
                 var productDto = _mapper.Map<ProductResponseDto>(product);
 
+                Log log = new Log()
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "INFO",
+                    Message = $"Retrieved product with ID {id} from the database."
+                };
+                _logService.Add(log);
+
                 return Ok(productDto);
             }
             catch (Exception)
             {
+                Log errorLog = new Log()
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "ERROR",
+                    Message = $"An error occurred while retrieving product with ID {id}."
+                };
+                _logService.Add(errorLog);
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }
         }
@@ -87,10 +135,22 @@ namespace WebShop.API.Controllers
                         .Select(pc => _mapper.Map<ProductResponseDto>(pc))
                         .ToList();
 
+                _logService.Add(new Log
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "INFO",
+                    Message = $"Retrieved products in country with ID {countryId}."
+                });
                 return Ok(products);
             }
             catch (Exception)
             {
+                _logService.Add(new Log
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "ERROR",
+                    Message = $"An error occurred while retrieving products in country with ID {countryId}."
+                });
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }
         }
@@ -106,10 +166,22 @@ namespace WebShop.API.Controllers
                     return NotFound();
 
                 var dto = _mapper.Map<ProductDetailDto>(product);
+                _logService.Add(new Log
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "INFO",
+                    Message = $"Retrieved product details for product with ID {id}."
+                });
                 return Ok(dto);
             }
             catch (Exception)
             {
+                _logService.Add(new Log
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "ERROR",
+                    Message = $"An error occurred while retrieving product details for product with ID {id}."
+                });
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }
         }
@@ -124,6 +196,12 @@ namespace WebShop.API.Controllers
                 var product = _mapper.Map<Product>(productDto);
                 _productService.Create(product);
 
+                _logService.Add(new Log
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "INFO",
+                    Message = $"Created a new product with ID {product.Id}."
+                });
                 return CreatedAtAction(
                     nameof(Get),
                     new { id = product.Id },
@@ -132,6 +210,12 @@ namespace WebShop.API.Controllers
             }
             catch (Exception)
             {
+                _logService.Add(new Log
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "ERROR",
+                    Message = "An error occurred while creating a new product."
+                });
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }
         }
@@ -152,12 +236,23 @@ namespace WebShop.API.Controllers
                 _mapper.Map(productDto, product);
                 _productService.Update(product);
 
+                _logService.Add(new Log
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "INFO",
+                    Message = $"Updated product with ID {id}."
+                });
                 return Ok();
             }
             catch (Exception)
             {
+                _logService.Add(new Log
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "ERROR",
+                    Message = $"An error occurred while updating product with ID {id}."
+                });
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
-
             }
         }
 
@@ -178,15 +273,27 @@ namespace WebShop.API.Controllers
                 }
 
                 _productService.Delete(product);
+                _logService.Add(new Log
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "INFO",
+                    Message = $"Deleted product with ID {id}."
+                });
+                var productDto = _mapper.Map<ProductResponseDto>(product);
+
+                return Ok(productDto);
             }
             catch (Exception)
             {
+                _logService.Add(new Log
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "ERROR",
+                    Message = $"An error occurred while deleting product with ID {id}."
+                });
                 return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
             }
 
-            var productDto = _mapper.Map<ProductResponseDto>(product);
-
-            return Ok(productDto);
         }
     }
 }

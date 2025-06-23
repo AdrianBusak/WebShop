@@ -37,6 +37,9 @@ namespace WebShop.API.Profiles
             CreateMap<CartItem, CartResponseDto>().ReverseMap();
             CreateMap<CartItem, CartItemCreateDto>().ReverseMap();
             CreateMap<CartItem, CartItemUpdateDto>().ReverseMap();
+
+            CreateMap<Log, LogResponseDto>().ReverseMap();
+            CreateMap<Log, LogCreateDto>().ReverseMap();
         }
     }
 }
