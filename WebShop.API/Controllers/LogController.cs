@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.API.DTOs;
 using WebShop.DAL.Models;
@@ -6,6 +7,7 @@ using WebShop.DAL.Services.LogServices;
 
 namespace WebShop.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LogController : ControllerBase
