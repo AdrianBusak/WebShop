@@ -15,7 +15,7 @@ namespace WebShop.MVC.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
-        public UserController(IUserService userService, IMapper mapper,IConfiguration configuration)
+        public UserController(IUserService userService, IMapper mapper, IConfiguration configuration)
         {
             _configuration = configuration;
             _userService = userService;
@@ -143,13 +143,19 @@ namespace WebShop.MVC.Controllers
 
                 _userService.CreateUser(user);
 
-                return RedirectToAction("Login", "User");
+                return RedirectToAction("RegisterConfirmation", "User", userVM);
 
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        [HttpGet]
+        public IActionResult RegisterConfirmation(UserRegisterVM userVM)
+        {
+            return View(userVM);
         }
     }
 }
