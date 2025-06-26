@@ -112,10 +112,20 @@ namespace WebShop.MVC.Controllers
                     return View();
                 }
 
-                if(userVM.EntryPassword != _configuration["EntryPassword"])
+                if (userVM.AddAdmin)
                 {
-                    ModelState.AddModelError("", "Invalid entry password");
-                    return View();
+                    var correctAdminPassword = _configuration["AdminPassword"];
+                    if (userVM.PasswordAdmin != correctAdminPassword)
+                    {
+                        ModelState.AddModelError("", "Invalid admin password");
+                        return View();
+                    }
+
+                    userVM.RoleId = 1; // admin
+                }
+                else
+                {
+                    userVM.RoleId = 2; // user
                 }
 
                 var trimmedUsername = userVM.Username.Trim();
