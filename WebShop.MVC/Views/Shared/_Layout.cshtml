@@ -1,4 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@{
+    var userName = ViewContext.HttpContext.User?.Identity?.Name;
+    var isLoggedIn = ViewContext.HttpContext.User?.Identity?.IsAuthenticated ?? false;
+    var firstName = ViewContext.HttpContext.User?.FindFirst("FirstName")?.Value;
+    var lastName = ViewContext.HttpContext.User?.FindFirst("LastName")?.Value;
+    var role = ViewContext.HttpContext.User?.FindFirst(ClaimTypes.Role)?.Value;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -26,6 +35,19 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                </div>
+                <div class="col-auto">
+                    <div class="d-flex align-items-center gap-2">
+                        @if (!isLoggedIn)
+                        {
+                            <a class="btn btn-outline-dark flex-shrink-0" asp-controller="User" asp-action="Login">Login</a>
+                        }
+                        else
+                        {
+                            <span class="badge bg-light text-dark text-nowrap">@firstName @lastName (@role)</span>
+                            <a class="btn btn-outline-dark flex-shrink-0" asp-controller="User" asp-action="Logout">Logout</a>
+                        }
+                    </div>
                 </div>
             </div>
         </nav>
