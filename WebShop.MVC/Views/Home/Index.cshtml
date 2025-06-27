@@ -2,7 +2,47 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Home</title>
+	<link href="~/css/landingPage.css" rel="stylesheet" />
+</head>
+<body>
+	<div class="container-landing-page">
+		<div class="left-part">
+			<h1>Dobrodošli u WebShop</h1>
+			<p>Ovo je početna stranica naše online trgovine.</p>
+
+			<p>
+				Istražite široku ponudu kvalitetnih proizvoda po povoljnim
+				cijenama. Bilo da tražite najnovije tehničke gadgete, modne
+				dodatke ili svakodnevne potrepštine – imamo sve što vam
+				treba.
+			</p>
+
+			<p>
+				🛍️ Pregledajte kategorije, dodajte proizvode u košaricu i
+				uživajte u jednostavnom i sigurnom procesu kupovine.
+			</p>
+
+			<p>
+				🚚 Brza dostava. 🔒 Sigurno plaćanje. ❤️ Povjerenje tisuća
+				zadovoljnih korisnika.
+			</p>
+
+			<p>
+				Spremni za kupovinu?
+				<a href="/User/Register">Kreirajte račun</a> ili
+				<a href="/User/Login">prijavite se</a> kako biste započeli.
+			</p>
+		</div>
+		<div class="right-part">
+			<img src="~/images/landing-page.jpg" alt="Alternate Text" />
+		</div>
+	</div>
+</body>
+</html>

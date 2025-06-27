@@ -1,0 +1,37 @@
+﻿.container-landing-page {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: lightsteelblue;
+    border-radius: 8px;
+    border: 2px solid black;
+}
+
+.left-part {
+    flex: 1;
+    padding: 20px;
+}
+
+.right-part {
+    flex: 1;
+    padding: 20px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+h1 {
+    font-size: 3em;
+    margin-bottom: 30px;
+}
+
+p {
+    font-size: 1.2em;
+    font-weight: 400;
+}
