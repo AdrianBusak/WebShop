@@ -34,14 +34,14 @@ namespace WebShop.DAL.Repositories.LogRepo
             _context.SaveChanges();
         }
 
-        public void Delete(int n)
+        public void Delete(int id)
         {
-            var logsToDelete = _context.Logs.Take(n).ToList();
-            if (logsToDelete.Count == 0)
+            var logToDelete = _context.Logs.Find(id);
+            if (logToDelete != null)
             {
-                throw new InvalidOperationException("No logs found to delete.");
+                throw new InvalidOperationException("No log found to delete.");
             }
-            _context.Logs.RemoveRange(logsToDelete);
+            _context.Logs.Remove(logToDelete);
             _context.SaveChanges();
         }
 

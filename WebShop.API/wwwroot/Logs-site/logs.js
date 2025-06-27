@@ -7,19 +7,28 @@
         return;
     }
 
+    $('#pageSizeSelect').on('change', function () {
+        loadLogs(jwt);
+    });
+
     loadLogs(jwt);
 });
 
 function loadLogs(jwt) {
+    $("#loading-spinner").show();
+    let logsShowCount = parseInt($("#pageSizeSelect").val()) || 10;
+    console.log(logsShowCount);
+    $("#logs-table tbody").empty();
+
+
     $.ajax({
         method: "GET",
-        url: "http://localhost:5131/api/Log",
+        url: `http://localhost:5131/api/Log/${logsShowCount}`,
         headers: {
             "Authorization": "Bearer " + jwt
         }
     }).done(function (logs) {
         logs.forEach(log => {
-            console.log(`Log =`, log);
 
             $("#logs-table tbody").append(`
                 <tr scope="row">
@@ -30,9 +39,8 @@ function loadLogs(jwt) {
                 </tr>
             `);
 
-            $("#loading-spinner").hide();
         });
-
+        $("#loading-spinner").hide();
     }).fail(function () {
         alert("Greška prilikom učitavanja logova.");
     });
