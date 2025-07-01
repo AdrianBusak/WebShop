@@ -5,16 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using WebShop.DAL.Models;
 using WebShop.DAL.Repositories.CategoryRepo;
+using WebShop.DAL.Services.ProductService;
 
 namespace WebShop.DAL.Services.CategoryServices
 {
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _repository;
+        private readonly IProductService _productService;
 
-        public CategoryService(ICategoryRepository repository)
+        public CategoryService(ICategoryRepository repository, IProductService productService)
         {
             _repository = repository;
+            _productService = productService;
         }
 
         public IEnumerable<Category> GetAll()
@@ -49,6 +52,12 @@ namespace WebShop.DAL.Services.CategoryServices
         {
             var category = _repository.GetById(id);
             if (category == null) return null;
+
+            IEnumerable<Product> products = _productService.GetAll();
+
+            products.Where(p => p.CategoryId == id)
+                .ToList()
+                .ForEach(p => p.CategoryId = null);
 
             _repository.Delete(category);
             _repository.SaveChanges();

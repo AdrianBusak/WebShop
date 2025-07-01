@@ -21,20 +21,31 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebShop.MVC</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebShop</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        
+                        @if (role == "admin")
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="AdminProduct" asp-action="Index">Products</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="AdminCategory" asp-action="Index">Categories</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/Users">Countries</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/Users">Users</a></li>
+                        }
+
+                        @if (role == "user")
+                        {
+                            <ul class="navbar-nav">
+                                <li class="nav-item"><a class="nav-link" href="/Products">Products</a></li>
+                            </ul>
+
+                        }
                     </ul>
+
                 </div>
                 <div class="col-auto">
                     <div class="d-flex align-items-center gap-2">
@@ -44,7 +55,9 @@
                         }
                         else
                         {
-                            <span class="badge bg-light text-dark text-nowrap">@firstName @lastName (@role)</span>
+                            <a class="nav-link" href="/Admin/Profile">
+                                <span class="badge bg-light text-dark text-nowrap">@firstName @lastName (@role)</span>
+                            </a>
                             <a class="btn btn-outline-dark flex-shrink-0" asp-controller="User" asp-action="Logout">Logout</a>
                         }
                     </div>
