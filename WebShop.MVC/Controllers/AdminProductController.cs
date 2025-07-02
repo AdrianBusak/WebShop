@@ -143,7 +143,6 @@ namespace WebShop.MVC.Controllers
             if (product == null)
                 return NotFound();
 
-            // Mapiraj promjene u postojeći entitet
             _mapper.Map(editVM, product);
 
             // Ručno mapiraj slike (dodavanje/uklanjanje)

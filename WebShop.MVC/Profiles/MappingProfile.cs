@@ -12,6 +12,8 @@ namespace WebShop.MVC.Profiles
             // User
             CreateMap<User, UserLoginVM>().ReverseMap();
             CreateMap<User, UserRegisterVM>().ReverseMap();
+            CreateMap<User, UserProfileVM>().ReverseMap();
+            CreateMap<User, UserEditProfileVM>().ReverseMap();
 
             // Product → ProductResponseVM
             CreateMap<Product, ProductResponseVM>()
@@ -52,6 +54,7 @@ namespace WebShop.MVC.Profiles
             CreateMap<Country, CountryVM>().ReverseMap();
             CreateMap<Country, CountryEditVM>().ReverseMap();
             CreateMap<Country, CountryCreateVM>().ReverseMap();
+
         }
     }
 }

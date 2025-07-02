@@ -51,10 +51,20 @@ namespace WebShop.DAL.Repositories.UserRepo
             return _context.Users.Find(id);
         }
 
+        public User? GetByUsername(string username)
+        {
+            return _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefault(u => u.Username == username);
+        }
+
         public void Update(User user)
         {
-            _context.Users.Update(user);
-            _context.SaveChanges();
+            if (user != null)
+            {
+                _context.Update(user);
+                _context.SaveChanges();
+            }
         }
     }
 }

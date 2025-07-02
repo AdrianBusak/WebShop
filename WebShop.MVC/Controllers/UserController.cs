@@ -7,6 +7,9 @@ using WebShop.DAL.Services.UserServices;
 using TapNGoMVC.ViewModels;
 using WebShop.DAL.Security;
 using WebShop.DAL.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using WebShop.MVC.ViewModels;
 
 namespace WebShop.MVC.Controllers
 {
@@ -157,5 +160,53 @@ namespace WebShop.MVC.Controllers
         {
             return View(userVM);
         }
+
+        [Authorize]
+        public IActionResult ProfileDetails()
+        {
+            var username = HttpContext.User.Identity.Name;
+
+            var userDb = _userService.GetUserByUsername(username);
+            if (userDb != null)
+            {
+                var userVm = _mapper.Map<UserProfileVM>(userDb);
+                return View(userVm);
+            }
+            return RedirectToAction("Index","AdminProduct");
+        }
+
+        [Authorize]
+        public IActionResult ProfileEdit(int id)
+        {
+            var userDb = _userService.GetUser(id);
+            var userVm = _mapper.Map<UserEditProfileVM>(userDb);
+
+            return View(userVm);
+        }
+
+        [Authorize]
+        [HttpPut]
+        public IActionResult ProfileEdit([FromBody]UserEditProfileVM userVm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(userVm);
+            }
+            var userDb = _userService.GetUserByUsername(userVm.Username);
+            if (userDb == null)
+            {
+                return RedirectToAction("ProfileDetails");
+            }
+
+            _mapper.Map(userVm, userDb);
+
+            userDb.PwdSalt = PasswordHashProvider.GetSalt();
+            userDb.PwdHash = PasswordHashProvider.GetHash(userVm.Password, userDb.PwdSalt);
+            userDb.RoleId = userDb.RoleId;
+
+            _userService.UpdateUser(userDb);
+            return RedirectToAction("ProfileDetails");
+        }
+
     }
 }

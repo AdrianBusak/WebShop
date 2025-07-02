@@ -24,6 +24,8 @@ namespace WebShop.DAL.Services.UserServices
 
         public User? GetUser(int id) => _repository.GetById(id);
 
+        public User? GetUserByUsername(string username) => _repository.GetByUsername(username);
+
         public void UpdateUser(User user) => _repository.Update(user);
     }
 }

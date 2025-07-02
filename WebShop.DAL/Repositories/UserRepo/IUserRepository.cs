@@ -14,5 +14,6 @@ namespace WebShop.DAL.Repositories.UserRepo
         void Add(User user);
         void Update(User user);
         void Delete(int id);
+        User? GetByUsername(string username);
     }
 }

@@ -44,8 +44,6 @@ namespace WebShop.DAL.Services.ProductService
 
         public void Delete(Product product)
         {
-            _imageRepo.DeleteRange(product.Images);
-
             _productRepo.Delete(product);
             _productRepo.Save();
         }

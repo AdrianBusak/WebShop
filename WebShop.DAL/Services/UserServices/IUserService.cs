@@ -14,5 +14,6 @@ namespace WebShop.DAL.Services.UserServices
         void CreateUser(User user);
         void UpdateUser(User user);
         void DeleteUser(int id);
+        User? GetUserByUsername(string username);
     }
 }

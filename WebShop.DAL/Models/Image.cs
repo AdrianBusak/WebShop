@@ -12,7 +12,6 @@ public partial class Image
     [Key]
     public int Id { get; set; }
 
-    [StringLength(256)]
     public string Content { get; set; } = null!;
 
     public bool? IsMain { get; set; }

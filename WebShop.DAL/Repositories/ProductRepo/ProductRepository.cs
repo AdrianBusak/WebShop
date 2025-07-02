@@ -29,7 +29,12 @@ namespace WebShop.DAL.Repositories.ProductRepo
             .ToList();
 
         public Product? GetById(int id) =>
-            _context.Products.FirstOrDefault(p => p.Id == id);
+            _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Images)
+                .Include(p => p.ProductCountries)
+                    .ThenInclude(pc => pc.Country)
+                .FirstOrDefault(p => p.Id == id);
 
         public IEnumerable<Product?> GetInCountry(int countryId) =>
             _context.ProductCountries
@@ -54,10 +59,6 @@ namespace WebShop.DAL.Repositories.ProductRepo
 
         public void Delete(Product product)
         {
-            _context.Entry(product).Collection(p => p.ProductCountries).Load();
-            _context.Entry(product).Collection(p => p.CartItems).Load();
-            _context.Entry(product).Collection(p => p.Images).Load();
-
             _context.ProductCountries.RemoveRange(product.ProductCountries);
             _context.CartItems.RemoveRange(product.CartItems);
             _context.Images.RemoveRange(product.Images);
