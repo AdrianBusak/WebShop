@@ -17,6 +17,10 @@ namespace WebShop.DAL.Repositories.ProductRepo
         }
         public IEnumerable<Product> GetAll() =>
             _context.Products
+            .Include(p => p.Category)
+            .Include(p => p.Images)
+            .Include(p => p.ProductCountries)
+            .ThenInclude(pc => pc.Country)
             .ToList();
 
         public IEnumerable<Product> GetByCategoryId(int categoryId) =>
@@ -38,6 +42,8 @@ namespace WebShop.DAL.Repositories.ProductRepo
             _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.Images)
+                .Include(p => p.ProductCountries)
+                    .ThenInclude(pc => pc.Country)
                 .FirstOrDefault(p => p.Id == id);
 
         public void Add(Product product) =>
@@ -46,8 +52,17 @@ namespace WebShop.DAL.Repositories.ProductRepo
         public void Update(Product product) =>
             _context.Products.Update(product);
 
-        public void Delete(Product product) =>
+        public void Delete(Product product)
+        {
+            _context.Entry(product).Collection(p => p.ProductCountries).Load();
+            _context.Entry(product).Collection(p => p.CartItems).Load();
+            _context.Entry(product).Collection(p => p.Images).Load();
+
+            _context.ProductCountries.RemoveRange(product.ProductCountries);
+            _context.CartItems.RemoveRange(product.CartItems);
+            _context.Images.RemoveRange(product.Images);
             _context.Products.Remove(product);
+        }
 
         public void Save() =>
             _context.SaveChanges();

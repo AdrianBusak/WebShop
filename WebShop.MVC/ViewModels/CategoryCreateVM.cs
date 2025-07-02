@@ -4,7 +4,7 @@ namespace WebShop.MVC.ViewModels
 {
     public class CategoryCreateVM
     {
-        [Required(ErrorMessage = "Category ID is required.")]
+        [Required(ErrorMessage = "Category Name is required.")]
         public string Name { get; set; }
     }
 }

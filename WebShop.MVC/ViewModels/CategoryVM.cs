@@ -1,8 +1,11 @@
-﻿namespace WebShop.MVC.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebShop.MVC.ViewModels
 {
     public class CategoryVM
     {
         public int Id { get; set; }
+        [Required(ErrorMessage = "Category Name is required.")]
         public string Name { get; set; }
     }
 }

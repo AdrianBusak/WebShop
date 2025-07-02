@@ -53,10 +53,9 @@ namespace WebShop.DAL.Services.CategoryServices
             var category = _repository.GetById(id);
             if (category == null) return null;
 
-            IEnumerable<Product> products = _productService.GetAll();
+            IEnumerable<Product> products = _productService.GetByCategoryId(id);
 
-            products.Where(p => p.CategoryId == id)
-                .ToList()
+            products.ToList()
                 .ForEach(p => p.CategoryId = null);
 
             _repository.Delete(category);
