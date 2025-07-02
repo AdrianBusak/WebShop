@@ -13,7 +13,7 @@ namespace WebShop.DAL.Services.CountryServices
         Country? GetById(int id);
         List<Country> GetForProduct(int productId);
         void Create(Country country);
-        void Update(Country country);
+        Country? Update(Country country);
         void Delete(Country country);
     }
 }

@@ -55,7 +55,7 @@ namespace WebShop.API.Controllers
                 if (pc == null)
                     return NotFound();
 
-                _service.Unlink(pc.ProductId, pc.CountryId);
+                _service.UnLink(pc.ProductId, pc.CountryId);
                 return Ok("Unlinked successfully.");
             }
             catch (Exception)

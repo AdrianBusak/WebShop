@@ -35,7 +35,7 @@ namespace WebShop.DAL.Services.ProductCountryServices
             _productCountryRepository.Add(productCountry);
         }
 
-        public void Unlink(int productId, int countryId)
+        public void UnLink(int productId, int countryId)
         {
             var productCountry = _productCountryRepository.Get(productId, countryId);
             if (productCountry == null)
@@ -47,6 +47,15 @@ namespace WebShop.DAL.Services.ProductCountryServices
         public bool Exists(int productId, int countryId)
         {
             return _productCountryRepository.Exists(productId, countryId);
+        }
+
+        public void UnLinkAllForCountry(int countryId)
+        {
+            var productCountrys = _productCountryRepository.GetByCountry(countryId);
+            if (productCountrys == null)
+                throw new Exception($"Product is not linked to country with ID {countryId}.");
+
+            _productCountryRepository.RemoveRange(productCountrys);
         }
     }
 }

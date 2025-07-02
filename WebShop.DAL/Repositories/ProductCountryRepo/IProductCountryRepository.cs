@@ -13,5 +13,7 @@ namespace WebShop.DAL.Repositories.ProductCountryRepo
         void Add(ProductCountry productCountry);
         void Remove(ProductCountry productCountry);
         ProductCountry? Get(int productId, int countryId);
+        IEnumerable<ProductCountry> GetByCountry(int countryId);
+        void RemoveRange(IEnumerable<ProductCountry> productCountrys);
     }
 }

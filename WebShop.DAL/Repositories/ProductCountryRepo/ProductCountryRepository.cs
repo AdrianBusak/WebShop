@@ -38,6 +38,21 @@ namespace WebShop.DAL.Repositories.ProductCountryRepo
             _context.SaveChanges();
         }
 
+        public IEnumerable<ProductCountry> GetByCountry(int countryId)
+        {
+            return _context.ProductCountries
+                .Where(pc => pc.CountryId == countryId)
+                .ToList();
+        }
+
+        public void RemoveRange(IEnumerable<ProductCountry> productCountrys)
+        {
+
+            if (productCountrys == null || !productCountrys.Any())
+                throw new ArgumentException("The collection of ProductCountry cannot be null or empty.", nameof(productCountrys));
+            _context.ProductCountries.RemoveRange(productCountrys);
+            _context.SaveChanges();
+        }
     }
 }
 

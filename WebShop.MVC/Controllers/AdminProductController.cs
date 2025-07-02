@@ -193,7 +193,7 @@ namespace WebShop.MVC.Controllers
                 {
                     try
                     {
-                        _productCountryService.Unlink(editVM.Id, countryId);
+                        _productCountryService.UnLink(editVM.Id, countryId);
                     }
                     catch (Exception ex)
                     {

@@ -10,7 +10,9 @@ namespace WebShop.DAL.Services.ProductCountryServices
     public interface IProductCountryService
     {
         void Link(int productId, int countryId);
-        void Unlink(int productId, int countryId);
+        void UnLink(int productId, int countryId);
         ProductCountry? Get(int productId, int countryId);
+        void UnLinkAllForCountry(int countryId);
+
     }
 }
