@@ -86,7 +86,13 @@ namespace WebShop.DAL.Services.CartServices
 
         public IEnumerable<Cart> GetAll()
         {
-            return _cartRepository.GetAll();
+            var carts = _cartRepository.GetAll();
+            if (carts == null || !carts.Any())
+            {
+                carts = new List<Cart>();
+            }
+
+            return carts;
         }
 
         public Cart? GetByUserId(int userId)

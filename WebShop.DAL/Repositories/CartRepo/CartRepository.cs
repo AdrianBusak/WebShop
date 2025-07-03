@@ -29,7 +29,9 @@ namespace WebShop.DAL.Repositories.CartRepo
         public IEnumerable<Cart> GetAll()
         {
             return _context.Carts
+                .Include(u => u.User)
                 .Include(c => c.CartItems)
+                    .ThenInclude(ci => ci.Product)
                 .ToList();
         }
 

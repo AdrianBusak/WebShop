@@ -1,0 +1,37 @@
+﻿@model List<WebShop.MVC.ViewModels.UserCartListVM>
+
+@{
+    ViewData["Title"] = "Košarice korisnika";
+}
+
+<h2>Košarice korisnika</h2>
+
+@foreach (var userCart in Model)
+{
+    <div class="border rounded p-3 mb-4 shadow-sm">
+        <h5>@userCart.Username</h5>
+        <p>Ukupno: <strong>@userCart.TotalPrice.ToString("0.00") €</strong></p>
+
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Proizvod</th>
+                    <th>Cijena</th>
+                    <th>Količina</th>
+                    <th>Ukupno</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in userCart.CartItems)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Price.ToString("0.00") €</td>
+                        <td>@item.Quantity</td>
+                        <td>@((item.Price * item.Quantity).ToString("0.00")) €</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

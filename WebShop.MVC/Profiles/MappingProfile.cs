@@ -76,6 +76,14 @@ namespace WebShop.MVC.Profiles
                               .Where(ci => ci.Product != null)
                               .Sum(ci => ci.Product.Price * ci.Quantity)
                 ));
+            CreateMap<Cart, UserCartListVM>()
+                .ForMember(dest => dest.CartItems, opt => opt.MapFrom(src => src.CartItems))
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.Username))
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(
+                    src => src.CartItems
+                              .Where(ci => ci.Product != null)
+                              .Sum(ci => ci.Product.Price * ci.Quantity)
+                ));
         }
     }
 }
