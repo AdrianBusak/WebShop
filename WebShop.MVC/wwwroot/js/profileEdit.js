@@ -20,6 +20,7 @@
             data: formData,
             success: function (response) {
                 alert("Profil uspješno ažuriran!");
+                //todo poruku da se profil ažurirao
                 window.location.href = "/User/ProfileDetails";
             },
             error: function (xhr) {

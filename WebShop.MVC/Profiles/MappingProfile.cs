@@ -25,17 +25,14 @@ namespace WebShop.MVC.Profiles
                 .ForMember(dest => dest.ProductCountries, opt => opt.MapFrom(src =>
                     src.SelectedCountriesIds.Select(id => new ProductCountry { CountryId = id })
                 ));
-                //.ForMember(dest => dest.Images, opt => opt.Ignore());
 
             // Product ↔ ProductEditVM
             CreateMap<Product, ProductEditVM>()
                 .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
-                .ForMember(dest => dest.SelectedCountriesIds, opt => opt.MapFrom(src => src.ProductCountries.Select(pc => pc.CountryId)))
-                .ForMember(dest => dest.SelectedImagesIds, opt => opt.MapFrom(src => src.Images.Select(i => i.Id)));
+                .ForMember(dest => dest.SelectedCountriesIds, opt => opt.MapFrom(src => src.ProductCountries.Select(pc => pc.CountryId)));
 
             CreateMap<ProductEditVM, Product>()
                 .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
-                //.ForMember(dest => dest.ProductCountries, opt => opt.Ignore()) // Ručno u kontroleru
                 .ForMember(dest => dest.Images, opt => opt.Ignore());
 
             // Product → ProductDetailsVM
@@ -43,7 +40,7 @@ namespace WebShop.MVC.Profiles
                 .ForMember(dest => dest.ImageUrlMain, opt => opt.MapFrom(src => src.Images.FirstOrDefault(i => i.IsMain == true)))
                 .ForMember(dest => dest.CountryNames, opt => opt.MapFrom(src => src.ProductCountries.Select(pc => pc.Country.Name)))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
-                .ForMember(dest => dest.SelectedImagesIds, opt => opt.MapFrom(src => src.Images.Select(i => i.Id)));
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images.Select(i => i.Content)));
 
             // Category
             CreateMap<Category, CategoryVM>().ReverseMap();

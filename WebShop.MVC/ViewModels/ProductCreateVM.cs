@@ -12,7 +12,8 @@ namespace WebShop.MVC.ViewModels
         public decimal Price { get; set; }
         public int? CategoryId { get; set; }
 
+
+        public List<IFormFile> UploadedImages { get; set; } = new();
         public List<int> SelectedCountriesIds { get; set; } = new();
-        public List<int>? SelectedImagesIds { get; set; } = new();
     }
 }

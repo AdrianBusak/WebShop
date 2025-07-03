@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 using WebShop.DAL.Models;
 using WebShop.DAL.Repositories.ProductCountryRepo;
 using WebShop.DAL.Services.CategoryServices;
@@ -55,15 +56,38 @@ namespace WebShop.MVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(ProductCreateVM productCreate)
+        public async Task<IActionResult> Create(ProductCreateVM productCreate)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var product = _mapper.Map<Product>(productCreate);
-                _productService.Create(product);
-                return RedirectToAction("Index");
+                InsertCountries();
+                InsertCategories();
+                return View(productCreate);
             }
-            return View(productCreate);
+            var product = _mapper.Map<Product>(productCreate);
+            _productService.Create(product);
+
+            await SaveImages(productCreate.UploadedImages, product.Id);
+
+            return RedirectToAction("Index");
+        }
+
+        private async Task SaveImages(List<IFormFile> files, int productId)
+        {
+            var imageTasks = files.Select(async file =>
+            {
+                using var ms = new MemoryStream();
+                await file.CopyToAsync(ms);
+                var imageBytes = ms.ToArray();
+                return new Image
+                {
+                    Content = $"data:{file.ContentType};base64,{Convert.ToBase64String(imageBytes)}",
+                    ProductId = productId
+                };
+            });
+
+            var images = await Task.WhenAll(imageTasks);
+            _imageService.AddRange(images);
         }
 
         [HttpGet]
@@ -85,7 +109,7 @@ namespace WebShop.MVC.Controllers
             var productEditVM = _mapper.Map<ProductEditVM>(product);
 
             productEditVM.SelectedCountriesIds = product.ProductCountries.Select(pc => pc.CountryId).ToList();
-            productEditVM.SelectedImagesIds = product.Images.Select(i => i.Id).ToList();
+            productEditVM.Images = product.Images.ToList();
             PopulateItemTypes(productEditVM);
             return productEditVM;
         }
@@ -110,13 +134,7 @@ namespace WebShop.MVC.Controllers
 
         private void InsertImages(ProductEditVM productEditVM)
         {
-            ViewBag.Images = _imageService
-                             .GetAllByProductId(productEditVM.Id)
-                             .Select(c => new SelectListItem
-                             {
-                                 Value = c.Id.ToString(),
-                                 Text = c.Content,
-                             }).ToList();
+            ViewBag.Images = productEditVM.Images;
         }
 
         private void InsertCountries()
@@ -145,32 +163,8 @@ namespace WebShop.MVC.Controllers
 
             _mapper.Map(editVM, product);
 
-            // Ručno mapiraj slike (dodavanje/uklanjanje)
             var currentImageIds = product.Images.Select(i => i.Id).ToList();
-            var selectedImageIds = editVM.SelectedImagesIds ?? new List<int>();
-
-            // Dodaj nove slike
-            foreach (var imageId in selectedImageIds.Except(currentImageIds))
-            {
-                var image = _imageService.GetById(imageId);
-                if (image != null && image.ProductId != product.Id)
-                {
-                    image.ProductId = product.Id;
-                    _imageService.Update(image);
-                }
-            }
-
-            // Ukloni slike koje više nisu selektirane
-            foreach (var imageId in currentImageIds.Except(selectedImageIds))
-            {
-                var image = _imageService.GetById(imageId);
-
-                if (image != null && image.ProductId == product.Id)
-                {
-                    image.ProductId = null;
-                    _imageService.Update(image);
-                }
-            }
+            var selectedImageIds = editVM.Images ?? new List<Image>();
 
 
             var existingCountryIds = product.ProductCountries.Select(pc => pc.CountryId).ToList();

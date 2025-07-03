@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,6 @@ namespace WebShop.DAL.Services.ImageServices
         void Create(Image image);
         void Update(Image image);
         void Delete(Image image);
+        void AddRange(IEnumerable<Image> images);
     }
 }

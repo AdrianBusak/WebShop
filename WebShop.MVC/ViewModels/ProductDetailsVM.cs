@@ -12,6 +12,6 @@
 
 
         public List<string> CountryNames { get; set; } = new();
-        public List<int>? SelectedImagesIds { get; set; } = new();
+        public List<string>? Images { get; set; } = new();
     }
 }

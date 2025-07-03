@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using WebShop.DAL.Models;
 
 namespace WebShop.MVC.ViewModels
 {
@@ -12,6 +13,9 @@ namespace WebShop.MVC.ViewModels
         public string? Brand { get; set; }
 
         public List<int> SelectedCountriesIds { get; set; } = new();
-        public List<int>? SelectedImagesIds { get; set; } = new();
+        public List<int> SelectedImagesIds { get; set; } = new();
+        public List<Image>? Images { get; set; } = new();
+        public List<IFormFile> UploadedImages { get; set; } = new();
+
     }
 }
