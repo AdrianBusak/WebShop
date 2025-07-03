@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebShop.DAL.Models;
 using WebShop.DAL.Services.CartServices;
 using WebShop.DAL.Services.ProductService;
 using WebShop.DAL.Services.UserServices;
@@ -7,47 +10,80 @@ using WebShop.MVC.ViewModels;
 
 namespace WebShop.MVC.Controllers
 {
+    [Authorize(Roles = "user")]
     public class UserProductController : Controller
     {
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
+
         public UserProductController(
             IProductService productService,
-            IMapper mapper
-            )
+            IMapper mapper,
+            IConfiguration configuration)
         {
             _productService = productService;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(SearchVM searchVm)
         {
-            var products = _productService.GetAll();
-            var productVMs = _mapper.Map<List<ProductUserVM>>(products);
-            return View(productVMs);
+            if (string.IsNullOrWhiteSpace(searchVm.Q) && !string.IsNullOrEmpty(searchVm.Submit))
+            {
+                // Ako je kliknuto "Go" bez upita, učitaj zadnji upit iz kolačića
+                searchVm.Q = Request.Cookies["query"];
+            }
+
+            IQueryable<Product> products = _productService.GetAll().AsQueryable();
+
+            // Filtriranje
+            if (!string.IsNullOrWhiteSpace(searchVm.Q))
+            {
+                products = products.Where(p => p.Name.Contains(searchVm.Q));
+            }
+
+            // Ukupan broj
+            var totalItems = products.Count();
+
+            // Sortiranje
+            switch (searchVm.OrderBy?.ToLower())
+            {
+                case "name": products = products.OrderBy(p => p.Name); break;
+                case "price": products = products.OrderBy(p => p.Price); break;
+                case "brand": products = products.OrderBy(p => p.Brand); break;
+                case "category": products = products.OrderBy(p => p.Category.Name); break;
+                default: products = products.OrderBy(p => p.Id); break;
+            }
+
+            // Paginacija
+            products = products.Skip((searchVm.Page - 1) * searchVm.Size).Take(searchVm.Size);
+            searchVm.Products = _mapper.Map<List<ProductUserVM>>(products.ToList());
+
+            // Paginator setup
+            int expand = _configuration.GetValue<int>("Paging:ExpandPages", 2);
+            searchVm.LastPage = (int)Math.Ceiling((double)totalItems / searchVm.Size);
+            searchVm.FromPager = Math.Max(1, searchVm.Page - expand);
+            searchVm.ToPager = Math.Min(searchVm.LastPage, searchVm.Page + expand);
+
+            // Spremi query u cookie ako je došao s forme
+            if (!string.IsNullOrWhiteSpace(searchVm.Q))
+            {
+                var option = new CookieOptions { Expires = DateTime.Now.AddMinutes(15) };
+                Response.Cookies.Append("query", searchVm.Q, option);
+            }
+
+            return View(searchVm);
         }
 
         public IActionResult Details(int id)
         {
             var product = _productService.GetWithDetails(id);
             if (product == null)
-            {
                 return NotFound();
-            }
+
             var productVM = _mapper.Map<ProductDetailsVM>(product);
             return View(productVM);
         }
-
-        //[HttpGet]
-        //public IActionResult Search(string query)
-        //{
-        //    if (string.IsNullOrEmpty(query))
-        //    {
-        //        return RedirectToAction("Index");
-        //    }
-        //    var products = _productService.SearchProducts(query);
-        //    var productVMs = _mapper.Map<IEnumerable<ProductResponseVM>>(products);
-        //    return View("Index", productVMs);
-        //}
     }
 }

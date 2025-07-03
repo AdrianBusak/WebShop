@@ -71,6 +71,11 @@ namespace WebShop.MVC.Controllers
                 if (loginVM.ReturnUrl != null)
                     return LocalRedirect(loginVM.ReturnUrl);
 
+                if(existingUser.Role.Name == "admin")
+                    return RedirectToAction("Index", "AdminProduct");
+                if (existingUser.Role.Name == ("user"))
+                    return RedirectToAction("Index", "UserProduct");
+
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)

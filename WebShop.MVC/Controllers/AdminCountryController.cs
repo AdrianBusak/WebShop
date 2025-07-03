@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.DAL.Models;
 using WebShop.DAL.Services.CountryServices;
@@ -7,6 +8,7 @@ using WebShop.MVC.ViewModels;
 
 namespace WebShop.MVC.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class AdminCountryController : Controller
     {
         private readonly IMapper _mapper;

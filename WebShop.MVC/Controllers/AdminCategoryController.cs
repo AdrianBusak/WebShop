@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.DAL.Models;
 using WebShop.DAL.Services.CategoryServices;
@@ -6,6 +7,7 @@ using WebShop.MVC.ViewModels;
 
 namespace WebShop.MVC.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class AdminCategoryController : Controller
     {
         private readonly ICategoryService _categoryService;

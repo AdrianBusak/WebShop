@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.DAL.Services.CartServices;
 using WebShop.DAL.Services.UserServices;
@@ -6,6 +7,7 @@ using WebShop.MVC.ViewModels;
 
 namespace WebShop.MVC.Controllers
 {
+    [Authorize(Roles = "user")]
     public class UserCartController : Controller
     {
         private readonly ICartService _cartService;

@@ -1,14 +1,45 @@
-﻿@model IEnumerable<WebShop.MVC.ViewModels.ProductUserVM>
+﻿@model WebShop.MVC.ViewModels.SearchVM
 @{
     ViewData["Title"] = "Proizvodi";
 }
+<link href="~/css/userProduct.css" rel="stylesheet" />
 
 <h2 class="mb-4">Proizvodi</h2>
 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-    @foreach (var item in Model)
-    {
+<form asp-action="Index" method="GET" class="mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <input asp-for="Q" class="form-control" placeholder="Pretraži proizvode..." />
+        </div>
+        <div class="col-md-3">
+            <label>Sortiraj:</label>
+            <select asp-for="OrderBy" class="form-select">
+                <option value="id">(Default)</option>
+                <option value="name">Naziv</option>
+                <option value="price">Cijena</option>
+                <option value="brand">Brend</option>
+                <option value="category">Kategorija</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label>Prikaži:</label>
+            <select asp-for="Size" class="form-select">
+                <option>3</option>
+                <option>5</option>
+                <option>10</option>
+                <option>20</option>
+                <option>50</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Traži</button>
+        </div>
+    </div>
+</form>
 
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    @foreach (var item in Model.Products)
+    {
         <div class="col">
             <div class="card h-100 shadow-sm product-card" data-image-index="0">
                 <div class="position-relative" style="height: 200px; overflow: hidden;">
@@ -18,7 +49,9 @@
                     }
                     else
                     {
-                        <div class="d-flex justify-content-center align-items-center h-100 bg-light text-muted">Nema slike</div>
+                        <div class="d-flex justify-content-center align-items-center h-100 bg-light text-muted">
+                            Nema slike
+                        </div>
                     }
                 </div>
                 <div class="card-body d-flex flex-column">
@@ -30,12 +63,34 @@
 
                     <div class="d-flex gap-2 mt-auto">
                         <button class="btn btn-sm btn-success w-100 btn-add" data-id="@item.Id">Dodaj u košaricu</button>
-                        <a class="btn btn-sm btn-outline-primary w-100" asp-action="Details" asp-controller="UserProduct" asp-route-id="@item.Id">Detalji</a>
+                        <a class="btn btn-sm btn-outline-primary w-100"
+                           asp-action="Details" asp-controller="UserProduct" asp-route-id="@item.Id">Detalji</a>
                     </div>
                 </div>
             </div>
         </div>
     }
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="~/js/cart.js"></script>
+
+@if (Model.LastPage > 1)
+{
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            @for (int i = Model.FromPager; i <= Model.ToPager; i++)
+            {
+                <li class="page-item @(Model.Page == i ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-Page="@i"
+                       asp-route-Q="@Model.Q"
+                       asp-route-OrderBy="@Model.OrderBy"
+                       asp-route-Size="@Model.Size">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+@section Scripts {
+    <script src="~/js/cart.js"></script>
+}

@@ -46,6 +46,9 @@ namespace WebShop.MVC.Profiles
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images.Select(i => i.Content)));
 
+            CreateMap<Product, SearchVM>()
+                .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src));
+
             // Category
             CreateMap<Category, CategoryVM>().ReverseMap();
             CreateMap<Category, CategoryCreateVM>().ReverseMap();
