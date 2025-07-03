@@ -1,0 +1,70 @@
+﻿@model WebShop.MVC.ViewModels.ProductDetailsVM
+
+<link href="~/css/details.css" rel="stylesheet" />
+
+@{
+    ViewData["Title"] = "Detalji proizvoda";
+}
+
+<h2 class="mb-4">Detalji proizvoda</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <h5>Naziv:</h5>
+                <p>@Model.Name</p>
+
+                <h5>Opis:</h5>
+                <p>@Model.Description</p>
+
+                <h5>Cijena:</h5>
+                <p>@Model.Price.ToString("C")</p>
+
+                <h5>Kategorija:</h5>
+                <p>@Model.CategoryName</p>
+
+                <h5>Brand:</h5>
+                <p>@Model.Brand</p>
+
+                <h5>Zemlje dostupnosti:</h5>
+                <p>@string.Join(", ", Model.CountryNames)</p>
+            </div>
+
+            <div class="col-md-6">
+                <h5>Slike:</h5>
+                @if (Model.Images != null && Model.Images.Any())
+                {
+                    <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            @for (int i = 0; i < Model.Images.Count; i++)
+                            {
+                                var image = Model.Images[i];
+                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                    <img src="@image" class="d-block w-100" alt="Slika @(i + 1)" style="max-height: 400px; object-fit: contain;" />
+                                </div>
+                            }
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon dark-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Prethodna</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon dark-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Sljedeća</span>
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Nema slika za ovaj proizvod.</p>
+                }
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary">Natrag na popis</a>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,62 @@
+﻿@model WebShop.MVC.ViewModels.CartVM
+@{
+    ViewData["Title"] = "Moja košarica";
+}
+
+<h2>Moja košarica</h2>
+
+@if (Model == null || Model.CartItems == null || !Model.CartItems.Any())
+{
+    <p class="text-muted">Košarica je prazna.</p>
+}
+else
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Slika</th>
+                <th>Proizvod</th>
+                <th>Cijena</th>
+                <th>Količina</th>
+                <th>Ukupno</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems)
+            {
+                <tr data-id="@item.ProductId">
+                    <td>
+                        <img src="@item.ImageUrl" alt="slika" style="max-height: 80px;" />
+                    </td>
+                    <td>@item.Name</td>
+                    <td>@item.Price.ToString("0.00") €</td>
+                    <td>
+                        <input type="number" min="1" value="@item.Quantity" class="form-control quantity-input" style="max-width: 80px;" />
+                    </td>
+                    <td>@((item.Price * item.Quantity).ToString("0.00")) €</td>
+                    <td>
+                        <form asp-action="RemoveFromCart" asp-controller="UserCart" asp-route-productId="@item.ProductId" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Ukloni</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mt-4 d-flex justify-content-between align-items-center p-3 border rounded bg-light shadow-sm">
+        <form method="post" asp-action="ClearCart" asp-controller="UserCart" class="mb-0">
+            <button class="btn btn-outline-danger">
+                Isprazni košaricu
+            </button>
+        </form>
+
+        <div class="text-end">
+            <h5 class="mb-0 text-dark">
+                Ukupno: <span class="fw-bold">@Model.TotalPrice.ToString("0.00") €</span>
+            </h5>
+        </div>
+    </div>
+
+}

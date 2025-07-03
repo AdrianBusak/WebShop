@@ -65,6 +65,7 @@ namespace WebShop.DAL.Services.CartServices
                 cart.CartItems.Clear();
                 cart.TotalPrice = 0;
                 _cartRepository.Update(cart);
+                _cartRepository.SaveChanges();
             }
             else
             {

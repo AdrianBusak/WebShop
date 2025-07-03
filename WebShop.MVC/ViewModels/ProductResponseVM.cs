@@ -11,4 +11,5 @@ public class ProductResponseVM
     public string? Brand { get; set; }
 
     public List<string> CountryNames { get; set; } = new();
+    public List<string> Images { get; set; } = new();
 }

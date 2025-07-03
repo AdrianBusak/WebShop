@@ -15,7 +15,7 @@ public partial class CartItem
 
     public int? Quantity { get; set; }
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(10, 2)")]
     public decimal? UnitPrice { get; set; }
 
     [Key]

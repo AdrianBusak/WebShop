@@ -20,6 +20,11 @@ namespace WebShop.MVC.Profiles
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.CountryNames, opt => opt.MapFrom(src => src.ProductCountries.Select(pc => pc.Country.Name)));
 
+            CreateMap<Product, ProductUserVM>()
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images.Select(i => i.Content)));
+
+
             // Product ↔ ProductCreateVM
             CreateMap<ProductCreateVM, Product>()
                 .ForMember(dest => dest.ProductCountries, opt => opt.MapFrom(src =>
@@ -37,7 +42,6 @@ namespace WebShop.MVC.Profiles
 
             // Product → ProductDetailsVM
             CreateMap<Product, ProductDetailsVM>()
-                .ForMember(dest => dest.ImageUrlMain, opt => opt.MapFrom(src => src.Images.FirstOrDefault(i => i.IsMain == true)))
                 .ForMember(dest => dest.CountryNames, opt => opt.MapFrom(src => src.ProductCountries.Select(pc => pc.Country.Name)))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images.Select(i => i.Content)));
@@ -52,6 +56,26 @@ namespace WebShop.MVC.Profiles
             CreateMap<Country, CountryEditVM>().ReverseMap();
             CreateMap<Country, CountryCreateVM>().ReverseMap();
 
+            // CartItem
+            CreateMap<CartItem, CartItemVM>()
+                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Product != null ? src.Product.Name : "Nepoznat proizvod"))
+                 .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src =>
+                     src.Product != null && src.Product.Images != null && src.Product.Images.Any()
+                         ? src.Product.Images.First().Content
+                         : string.Empty
+                 ))
+                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
+                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Product != null ? src.Product.Price : 0))
+                 .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity));
+
+            //Cart
+            CreateMap<Cart, CartVM>()
+                .ForMember(dest => dest.CartItems, opt => opt.MapFrom(src => src.CartItems))
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(
+                    src => src.CartItems
+                              .Where(ci => ci.Product != null)
+                              .Sum(ci => ci.Product.Price * ci.Quantity)
+                ));
         }
     }
 }
