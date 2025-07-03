@@ -17,7 +17,7 @@ public partial class Cart
 
     public int? UserId { get; set; }
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(10, 2)")]
     public decimal? TotalPrice { get; set; }
 
     [InverseProperty("Cart")]

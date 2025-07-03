@@ -16,6 +16,7 @@ namespace WebShop.DAL.Repositories.LogRepo
         }
         public void Add(Log log)
         {
+            log.Timestamp = DateTime.UtcNow;
             if (log == null)
             {
                 throw new ArgumentNullException(nameof(log), "Log cannot be null");

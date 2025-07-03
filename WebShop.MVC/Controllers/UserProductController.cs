@@ -31,22 +31,18 @@ namespace WebShop.MVC.Controllers
         {
             if (string.IsNullOrWhiteSpace(searchVm.Q) && !string.IsNullOrEmpty(searchVm.Submit))
             {
-                // Ako je kliknuto "Go" bez upita, učitaj zadnji upit iz kolačića
                 searchVm.Q = Request.Cookies["query"];
             }
 
             IQueryable<Product> products = _productService.GetAll().AsQueryable();
 
-            // Filtriranje
             if (!string.IsNullOrWhiteSpace(searchVm.Q))
             {
                 products = products.Where(p => p.Name.Contains(searchVm.Q));
             }
 
-            // Ukupan broj
             var totalItems = products.Count();
 
-            // Sortiranje
             switch (searchVm.OrderBy?.ToLower())
             {
                 case "name": products = products.OrderBy(p => p.Name); break;
@@ -56,17 +52,14 @@ namespace WebShop.MVC.Controllers
                 default: products = products.OrderBy(p => p.Id); break;
             }
 
-            // Paginacija
             products = products.Skip((searchVm.Page - 1) * searchVm.Size).Take(searchVm.Size);
             searchVm.Products = _mapper.Map<List<ProductUserVM>>(products.ToList());
 
-            // Paginator setup
             int expand = _configuration.GetValue<int>("Paging:ExpandPages", 2);
             searchVm.LastPage = (int)Math.Ceiling((double)totalItems / searchVm.Size);
             searchVm.FromPager = Math.Max(1, searchVm.Page - expand);
             searchVm.ToPager = Math.Min(searchVm.LastPage, searchVm.Page + expand);
 
-            // Spremi query u cookie ako je došao s forme
             if (!string.IsNullOrWhiteSpace(searchVm.Q))
             {
                 var option = new CookieOptions { Expires = DateTime.Now.AddMinutes(15) };
