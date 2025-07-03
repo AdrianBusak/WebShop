@@ -15,6 +15,16 @@ namespace WebShop.MVC.Controllers
 
         public IActionResult Index()
         {
+            if (User.IsInRole("admin"))
+            {
+                return RedirectToAction("Index", "AdminProduct");
+            }
+            
+            if (User.IsInRole("user"))
+            {
+                return RedirectToAction("Index", "UserProduct");
+            }
+
             return View();
         }
 

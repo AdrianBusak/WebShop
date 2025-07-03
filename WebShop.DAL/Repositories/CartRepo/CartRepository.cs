@@ -40,6 +40,7 @@ namespace WebShop.DAL.Repositories.CartRepo
             return _context.Carts
                 .Include(c => c.CartItems)
                     .ThenInclude(p => p.Product)
+                    .ThenInclude(i => i.Images)
                 .FirstOrDefault(c => c.UserId == userId);
         }
 

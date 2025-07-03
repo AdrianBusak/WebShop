@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebShop.DAL.Models;
 using WebShop.DAL.Services.CartServices;
+using WebShop.DAL.Services.LogServices;
 using WebShop.DAL.Services.UserServices;
 using WebShop.MVC.ViewModels;
 
@@ -13,15 +15,19 @@ namespace WebShop.MVC.Controllers
         private readonly ICartService _cartService;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly ILogService _logger;
 
         public UserCartController(
             ICartService cartService,
             IUserService userService,
-            IMapper mapper)
+            IMapper mapper,
+            ILogService logger
+            )
         {
             _cartService = cartService;
             _userService = userService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -61,6 +67,11 @@ namespace WebShop.MVC.Controllers
                 return RedirectToAction("Login", "User");
             }
             _cartService.AddToCart(user.Id, cartItemVM.ProductId, cartItemVM.Quantity);
+            _logger.Add(
+                new Log { 
+                    Message = $"User {username} added product {cartItemVM.ProductId} to cart with quantity {cartItemVM.Quantity}",
+                    Level = "Info",
+                });
             return RedirectToAction("Index", "UserProduct");
         }
         [HttpPost]
@@ -77,6 +88,12 @@ namespace WebShop.MVC.Controllers
                 return NotFound();
             }
             _cartService.UpdateItem(user.Id, productId, quantity);
+            _logger.Add(
+                new Log
+                {
+                    Message = $"User {username} updated product {productId} in cart to quantity {quantity}",
+                    Level = "Info",
+                });
             return RedirectToAction("Index");
         }
 
@@ -94,6 +111,12 @@ namespace WebShop.MVC.Controllers
                 return NotFound();
             }
             _cartService.RemoveItem(user.Id, productId);
+            _logger.Add(
+                new Log
+                {
+                    Message = $"User {username} removed product {productId} from cart",
+                    Level = "Info",
+                });
             return RedirectToAction("Index");
         }
         [HttpPost]
@@ -110,6 +133,12 @@ namespace WebShop.MVC.Controllers
                 return NotFound();
             }
             _cartService.ClearCart(user.Id);
+            _logger.Add(
+                new Log
+                {
+                    Message = $"User {username} cleared their cart",
+                    Level = "Info",
+                });
             return RedirectToAction("Index");
         }
     }
