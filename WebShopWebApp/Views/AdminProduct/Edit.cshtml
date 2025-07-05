@@ -1,0 +1,152 @@
+﻿@using WebShop.DAL.Models
+@using WebShopWebApp.ViewModels
+@model ProductEditVM
+
+@{
+    ViewData["Title"] = "Uredi proizvod";
+    var imageList = ViewBag.Images as List<Image>;
+}
+
+<h2>Uredi proizvod</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Price" class="form-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Brand" class="form-label"></label>
+                <input asp-for="Brand" class="form-control" />
+                <span asp-validation-for="Brand" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="CategoryId" class="form-label"></label>
+                <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control"></select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="SelectedCountriesIds" class="form-label">Zemlje</label>
+                <select asp-for="SelectedCountriesIds" asp-items="ViewBag.Countries" class="form-control" multiple></select>
+                <span asp-validation-for="SelectedCountriesIds" class="text-danger"></span>
+            </div>
+
+            @* Prikaz postojećih slika *@
+            <div class="mb-4">
+                <label class="form-label">Postojeće slike</label>
+                <div class="row">
+                    @if (imageList != null && imageList.Any())
+                    {
+                        foreach (var img in imageList)
+                        {
+                            <div class="col-md-3 mb-3 position-relative">
+                                <img src="@img.Content" class="img-thumbnail" style="max-height: 150px;" />
+
+                                <input type="checkbox" name="SelectedImagesIds" value="@img.Id" checked hidden />
+
+                                <button type="button" class="btn-close position-absolute top-0 end-0 bg-danger rounded-circle remove-image-btn"
+                                        data-id="@img.Id" title="Ukloni sliku"></button>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12 text-muted">Nema slika za ovaj proizvod.</div>
+                    }
+                </div>
+            </div>
+
+            <div class="form-group mb-4">
+                <label class="form-label">Dodaj nove slike</label>
+                <input type="file" name="UploadedImages" class="form-control" multiple />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Spremi" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Natrag</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+@section Scripts {
+    <script>
+        $('input[type="file"][name="UploadedImages"]').on('change', function () {
+            const $input = $(this);
+            const files = this.files;
+
+            const $existingPreview = $('#new-image-previews');
+            if ($existingPreview.length) {
+                $existingPreview.remove();
+            }
+
+            const $previewContainer = $('<div class="row mt-3" id="new-image-previews"></div>');
+
+            $.each(files, function (i, file) {
+                if (!file.type.startsWith('image/')) return;
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const $col = $('<div class="col-md-3 mb-3 position-relative"></div>');
+                    const $img = $('<img class="img-thumbnail" style="max-height: 150px;" />').attr('src', e.target.result);
+                    $col.append($img);
+                    $previewContainer.append($col);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            $input.parent().append($previewContainer);
+        });
+
+        $('.remove-image-btn').on('click', function () {
+            const $btn = $(this);
+            const imageId = $btn.data('id');
+            const $parent = $btn.closest('.col-md-3');
+
+            $parent.find('input[type="checkbox"]').remove();
+            $parent.remove();
+
+            $.ajax({
+                url: '@Url.Action("DeleteImage", "AdminProduct")',
+                type: 'POST',
+                data: { id: imageId },
+                success: function (response) {
+                    if (response.success) {
+                        alert('Slika uspješno uklonjena.');
+                    } else {
+                        console.error('Greška:', response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Greška u AJAX pozivu:', error);
+                }
+            });
+        });
+    </script>
+
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
