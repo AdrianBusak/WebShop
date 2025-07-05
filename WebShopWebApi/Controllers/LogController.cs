@@ -7,7 +7,7 @@ using WebShopWebApi.DTOs;
 
 namespace WebShopWebApi.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class LogController : ControllerBase

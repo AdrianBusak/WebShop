@@ -8,7 +8,7 @@ using WebShopWebApi.DTOs;
 
 namespace WebShopWebApi.Controllers
 {
-    [Authorize(Roles = "admin")]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CartController : ControllerBase

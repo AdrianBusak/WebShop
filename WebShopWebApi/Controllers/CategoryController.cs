@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebShop.DAL.Models;
 using WebShop.DAL.Services;
@@ -7,6 +8,7 @@ using WebShopWebApi.DTOs;
 
 namespace WebShopWebApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
