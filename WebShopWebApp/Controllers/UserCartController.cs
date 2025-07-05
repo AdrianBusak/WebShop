@@ -74,7 +74,7 @@ namespace WebShopWebApp.Controllers
                 });
             return RedirectToAction("Index", "UserProduct");
         }
-        [HttpPost]
+        [HttpPut]
         public IActionResult UpdateCartItem(int productId, int quantity)
         {
             var username = User.Identity?.Name;

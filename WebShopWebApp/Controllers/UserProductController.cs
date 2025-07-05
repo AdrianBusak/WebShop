@@ -29,10 +29,6 @@ namespace WebShopWebApp.Controllers
 
         public IActionResult Index(SearchVM searchVm)
         {
-            if (string.IsNullOrWhiteSpace(searchVm.Q) && !string.IsNullOrEmpty(searchVm.Submit))
-            {
-                searchVm.Q = Request.Cookies["query"];
-            }
 
             IQueryable<Product> products = _productService.GetAll().AsQueryable();
 
@@ -59,12 +55,6 @@ namespace WebShopWebApp.Controllers
             searchVm.LastPage = (int)Math.Ceiling((double)totalItems / searchVm.Size);
             searchVm.FromPager = Math.Max(1, searchVm.Page - expand);
             searchVm.ToPager = Math.Min(searchVm.LastPage, searchVm.Page + expand);
-
-            if (!string.IsNullOrWhiteSpace(searchVm.Q))
-            {
-                var option = new CookieOptions { Expires = DateTime.Now.AddMinutes(15) };
-                Response.Cookies.Append("query", searchVm.Q, option);
-            }
 
             return View(searchVm);
         }

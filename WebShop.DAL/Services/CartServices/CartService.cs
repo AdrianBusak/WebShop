@@ -100,7 +100,7 @@ namespace WebShop.DAL.Services.CartServices
             return _cartRepository.GetByUserId(userId);
         }
 
-        public void RemoveItem(int userId, int productId) //vidit jel sljaka ovak ak ne dodaj ProductRepo
+        public void RemoveItem(int userId, int productId)
         {
             var cart = _cartRepository.GetByUserId(userId);
             if (cart == null)
@@ -113,17 +113,9 @@ namespace WebShop.DAL.Services.CartServices
             {
                 throw new ArgumentException("Item not found in the cart.");
             }
-            if (itemToRemove.Quantity > 1)
-            {
-                itemToRemove.Quantity--;
-            }
-            else
-            {
-                cart.CartItems.Remove(itemToRemove);
-            }
 
-            cart.TotalPrice = cart.CartItems.Sum(i => i.Quantity * i.UnitPrice);
-            _cartRepository.Update(cart);
+            cart.CartItems.Remove(itemToRemove);
+
             _cartRepository.SaveChanges();
 
         }

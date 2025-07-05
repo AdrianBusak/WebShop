@@ -1,18 +1,16 @@
 ﻿$(document).ready(function () {
-    $('.btn-add').click(function () {
-        let productId = $(this).data('id');
-        let quantity = $(`.quantity-input[data-id=${productId}]`).val();
-
+    $('.quantity-input').on('change', function () {
+        var quantity = $(this).val();
+        var productId = $(this).closest('tr').data('id');
         $.ajax({
-            url: '/UserCart/AddToCart',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ productId: productId, quantity: quantity }),
-            success: function () {
-                alert("Proizvod dodan u košaricu!");
+            url: updateCartItemUrl,
+            type: 'PUT',
+            data: { productId: productId, quantity: quantity },
+            success: function (response) {
+                location.reload();
             },
             error: function () {
-                alert("Greška prilikom dodavanja.");
+                alert('Došlo je do greške prilikom ažuriranja količine.');
             }
         });
     });
