@@ -48,8 +48,7 @@ namespace WebShop.DAL.Repositories.ProductCountryRepo
         public void RemoveRange(IEnumerable<ProductCountry> productCountrys)
         {
 
-            if (productCountrys == null || !productCountrys.Any())
-                throw new ArgumentException("The collection of ProductCountry cannot be null or empty.", nameof(productCountrys));
+            if (productCountrys == null || !productCountrys.Any()) return;
             _context.ProductCountries.RemoveRange(productCountrys);
             _context.SaveChanges();
         }

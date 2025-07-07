@@ -15,5 +15,6 @@ namespace WebShop.DAL.Repositories.CartRepo
         void Update(Cart cart);
         void Delete(Cart cart);
         void SaveChanges();
+        void RemoveCartItem(int productId);
     }
 }

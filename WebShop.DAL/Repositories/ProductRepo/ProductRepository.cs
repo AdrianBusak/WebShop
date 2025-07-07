@@ -50,7 +50,7 @@ namespace WebShop.DAL.Repositories.ProductRepo
                 .Include(p => p.ProductCountries)
                     .ThenInclude(pc => pc.Country)
                 .FirstOrDefault(p => p.Id == id);
-
+            
         public void Add(Product product) =>
             _context.Products.Add(product);
 
@@ -59,9 +59,6 @@ namespace WebShop.DAL.Repositories.ProductRepo
 
         public void Delete(Product product)
         {
-            _context.ProductCountries.RemoveRange(product.ProductCountries);
-            _context.CartItems.RemoveRange(product.CartItems);
-            _context.Images.RemoveRange(product.Images);
             _context.Products.Remove(product);
         }
 

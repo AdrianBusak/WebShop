@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebShop.DAL.Models;
+using WebShop.DAL.Repositories.CartRepo;
 using WebShop.DAL.Repositories.ImageRepo;
+using WebShop.DAL.Repositories.ProductCountryRepo;
 using WebShop.DAL.Repositories.ProductRepo;
 
 namespace WebShop.DAL.Services.ProductService
@@ -13,11 +16,18 @@ namespace WebShop.DAL.Services.ProductService
     {
         private readonly IProductRepository _productRepo;
         private readonly IImageRepository _imageRepo;
-
-        public ProductService(IProductRepository productRepository, IImageRepository imageRepository)
+        private readonly ICartRepository _cartRepo;
+        private readonly IProductCountryRepository _productCountryRepo;
+        public ProductService(IProductRepository productRepository,
+            IImageRepository imageRepository,
+            ICartRepository cartRepo,
+            IProductCountryRepository countryRepository
+            )
         {
             _productRepo = productRepository;
             _imageRepo = imageRepository;
+            _cartRepo = cartRepo;
+            _productCountryRepo = countryRepository;
         }
 
         public IEnumerable<Product> GetAll() => _productRepo.GetAll();
@@ -44,6 +54,12 @@ namespace WebShop.DAL.Services.ProductService
 
         public void Delete(Product product)
         {
+            _cartRepo.RemoveCartItem(product.Id);
+
+            _imageRepo.DeleteRange(product.Images);
+
+            _productCountryRepo.RemoveRange(product.ProductCountries);
+
             _productRepo.Delete(product);
             _productRepo.Save();
         }

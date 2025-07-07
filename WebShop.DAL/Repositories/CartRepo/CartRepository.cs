@@ -44,6 +44,16 @@ namespace WebShop.DAL.Repositories.CartRepo
                 .FirstOrDefault(c => c.UserId == userId);
         }
 
+        public void RemoveCartItem(int productId)
+        {
+            var cartItem = _context.CartItems.FirstOrDefault(ci => ci.ProductId == productId);
+            if (cartItem != null)
+            {
+                _context.CartItems.Remove(cartItem);
+            }
+            SaveChanges();
+        }
+
         public void SaveChanges()
         {
             _context.SaveChanges();
