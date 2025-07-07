@@ -40,14 +40,26 @@ namespace WebShopWebApp.Controllers
         [HttpPost]
         public IActionResult Create(CountryCreateVM countryVM)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(countryVM);
+                bool exists = _countryService
+                    .GetAll()
+                    .Any(c => c.Name.Trim().ToLower() == countryVM.Name.Trim().ToLower());
+
+                if (exists)
+                {
+                    ModelState.AddModelError("Name", "A country with this name already exists.");
+                    return View(countryVM);
+                }
+
+                var country = _mapper.Map<Country>(countryVM);
+                _countryService.Create(country);
+                return RedirectToAction(nameof(Index));
             }
-            var country = _mapper.Map<Country>(countryVM);
-            _countryService.Create(country);
-            return RedirectToAction(nameof(Index));
+
+            return View(countryVM);
         }
+
 
         public IActionResult Edit(int id)
         {

@@ -37,10 +37,21 @@ namespace WebShopWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                bool exists = _categoryService
+                    .GetAll()
+                    .Any(c => c.Name.Trim().ToLower() == categoryVM.Name.Trim().ToLower());
+
+                if (exists)
+                {
+                    ModelState.AddModelError("Name", "A category with this name already exists.");
+                    return View(categoryVM);
+                }
+
                 var category = _mapper.Map<Category>(categoryVM);
                 _categoryService.Create(category);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(categoryVM);
         }
 

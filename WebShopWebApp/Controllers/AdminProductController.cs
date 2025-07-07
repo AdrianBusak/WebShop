@@ -109,6 +109,18 @@ namespace WebShopWebApp.Controllers
                 InsertCategories();
                 return View(productCreate);
             }
+            bool exists = _productService
+                                   .GetAll()
+                                   .Any(p => p.Name.Trim().ToLower() == productCreate.Name.Trim().ToLower());
+
+            if (exists)
+            {
+                ModelState.AddModelError("Name", "A product with this name already exists.");
+                InsertCountries();
+                InsertCategories();
+                return View(productCreate);
+            }
+
             var product = _mapper.Map<Product>(productCreate);
             _productService.Create(product);
 
