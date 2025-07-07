@@ -1,71 +1,103 @@
 ﻿@using WebShopWebApp.ViewModels
-@model IEnumerable<ProductResponseVM>
+@model AdminSearchVM
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Products</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">Proizvodi</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Brand)
-            </th>
-            <th>
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand)
-            </td>
-            <th>
-                @string.Join(", ", item.CountryNames)
-                </th>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <form asp-action="Index" method="GET" class="mb-4">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label asp-for="Q" class="form-label">Pretraži proizvode</label>
+                <input asp-for="Q" class="form-control" placeholder="Upiši pojam..." />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="OrderBy" class="form-label">Sortiraj po</label>
+                <select asp-for="OrderBy" class="form-select">
+                    <option value="id">(Default)</option>
+                    <option value="name">Naziv</option>
+                    <option value="price">Cijena</option>
+                    <option value="brand">Brend</option>
+                    <option value="category">Kategorija</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label asp-for="Size" class="form-label">Prikaži</label>
+                <select asp-for="Size" class="form-select">
+                    <option>3</option>
+                    <option>5</option>
+                    <option>10</option>
+                    <option>20</option>
+                    <option>50</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">Traži</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="mb-3">
+        <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-circle"></i> Novi proizvod</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Products.ElementAt(0).Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.Products.ElementAt(0).Name)</th>
+                    <th>@Html.DisplayNameFor(model => model.Products.ElementAt(0).Description)</th>
+                    <th>@Html.DisplayNameFor(model => model.Products.ElementAt(0).Price)</th>
+                    <th>@Html.DisplayNameFor(model => model.Products.ElementAt(0).CategoryName)</th>
+                    <th>@Html.DisplayNameFor(model => model.Products.ElementAt(0).Brand)</th>
+                    <th>Zemlje</th>
+                    <th>Akcije</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Products)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CategoryName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Brand)</td>
+                        <td>@string.Join(", ", item.CountryNames)</td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                @Html.ActionLink("Uredi", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-primary" })
+                                @Html.ActionLink("Detalji", "Details", new { id = item.Id }, new { @class = "btn btn-outline-secondary" })
+                                @Html.ActionLink("Obriši", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger" })
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Model.LastPage > 1)
+    {
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                @for (int i = Model.FromPager; i <= Model.ToPager; i++)
+                {
+                    <li class="page-item @(Model.Page == i ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-Page="@i"
+                           asp-route-Q="@Model.Q"
+                           asp-route-OrderBy="@Model.OrderBy"
+                           asp-route-Size="@Model.Size">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

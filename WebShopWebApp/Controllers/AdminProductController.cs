@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
 using WebShop.DAL.Models;
 using WebShop.DAL.Repositories.ProductCountryRepo;
@@ -23,6 +24,7 @@ namespace WebShopWebApp.Controllers
         private readonly IImageService _imageService;
         private readonly ICategoryService _categoryService;
         private readonly IProductCountryService _productCountryService;
+        private readonly IConfiguration _configuration;
 
         public AdminProductController(
             IMapper mapper,
@@ -30,7 +32,9 @@ namespace WebShopWebApp.Controllers
             ICountryService countryService,
             IImageService imageService,
             ICategoryService categoryService,
-            IProductCountryService productCountryService)
+            IProductCountryService productCountryService,
+            IConfiguration configuration
+            )
         {
             _mapper = mapper;
             _productService = service;
@@ -38,15 +42,55 @@ namespace WebShopWebApp.Controllers
             _imageService = imageService;
             _categoryService = categoryService;
             _productCountryService = productCountryService;
+            _configuration = configuration;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(AdminSearchVM searchVm)
         {
-            var products = _productService.GetAll();
-            var productViewModels = _mapper.Map<IEnumerable<ProductResponseVM>>(products);
+            if (searchVm.Page == 0) searchVm.Page = 1;
+            if (searchVm.Size == 0) searchVm.Size = 10;
 
-            return View(productViewModels);
+            var query = _productService.GetAll().AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchVm.Q))
+            {
+                query = query.Where(p => p.Name.Contains(searchVm.Q));
+            }
+
+            switch (searchVm.OrderBy?.ToLower())
+            {
+                case "name":
+                    query = query.OrderBy(p => p.Name);
+                    break;
+                case "price":
+                    query = query.OrderBy(p => p.Price);
+                    break;
+                case "brand":
+                    query = query.OrderBy(p => p.Brand);
+                    break;
+                case "category":
+                    query = query.OrderBy(p => p.Category.Name);
+                    break;
+                default:
+                    query = query.OrderBy(p => p.Id);
+                    break;
+            }
+
+            var totalItems = query.Count();
+
+            query = query.Skip((searchVm.Page - 1) * searchVm.Size).Take(searchVm.Size);
+
+            var productList = query.ToList();
+            var productVMs = _mapper.Map<List<ProductResponseVM>>(productList);
+
+            searchVm.Products = productVMs;
+            searchVm.LastPage = (int)Math.Ceiling(totalItems / (double)searchVm.Size);
+            searchVm.FromPager = Math.Max(1, searchVm.Page - 2);
+            searchVm.ToPager = Math.Min(searchVm.LastPage, searchVm.Page + 2);
+
+            return View(searchVm);
         }
+
 
         [HttpGet]
         public IActionResult Create()

@@ -1,42 +1,51 @@
 ﻿@using WebShopWebApp.ViewModels
 @model ProductDetailsVM
 
-<link href="~/css/details.css" rel="stylesheet" />
-
 @{
     ViewData["Title"] = "Detalji proizvoda";
 }
 
-<h2 class="mb-4">Detalji proizvoda</h2>
+<link href="~/css/details.css" rel="stylesheet" />
 
-<div class="card shadow-sm">
-    <div class="card-body">
-        <div class="row mb-3">
+<h2 class="mb-4 text-primary fw-bold"><i class="bi bi-box-seam"></i> Detalji proizvoda</h2>
+
+<div class="card shadow border-0">
+    <div class="card-body p-4">
+        <div class="row g-5">
+
             <div class="col-md-6">
-                <h5>Naziv:</h5>
-                <p>@Model.Name</p>
+                <dl class="row">
+                    <dt class="col-sm-4 text-muted">Naziv:</dt>
+                    <dd class="col-sm-8 product-name">@Model.Name</dd>
 
-                <h5>Opis:</h5>
-                <p>@Model.Description</p>
+                    <dt class="col-sm-4 text-muted">Opis:</dt>
+                    <dd class="col-sm-8">@Model.Description</dd>
 
-                <h5>Cijena:</h5>
-                <p>@Model.Price.ToString("C")</p>
+                    <dt class="col-sm-4 text-muted">Cijena:</dt>
+                    <dd class="col-sm-8 text-success fw-bold">@Model.Price.ToString("0.00") €</dd>
 
-                <h5>Kategorija:</h5>
-                <p>@Model.CategoryName</p>
+                    <dt class="col-sm-4 text-muted">Kategorija:</dt>
+                    <dd class="col-sm-8">@Model.CategoryName</dd>
 
-                <h5>Brand:</h5>
-                <p>@Model.Brand</p>
+                    <dt class="col-sm-4 text-muted">Brend:</dt>
+                    <dd class="col-sm-8">@Model.Brand</dd>
 
-                <h5>Zemlje dostupnosti:</h5>
-                <p>@string.Join(", ", Model.CountryNames)</p>
+                    <dt class="col-sm-4 text-muted">Dostupno u:</dt>
+                    <dd class="col-sm-8">@string.Join(", ", Model.CountryNames)</dd>
+
+                    <dt class="col-sm-4 text-muted">Količina:</dt>
+                    <dd class="col-sm-8 text-success fw-bold">
+                        <input type="number" min="1" value="1" class="form-control quantity-input mb-3" data-id="@Model.Id" style="max-width: 120px;" />
+                    </dd>
+                </dl>
             </div>
 
             <div class="col-md-6">
-                <h5>Slike:</h5>
+                <h5 class="mb-3">Slike proizvoda</h5>
+
                 @if (Model.Images != null && Model.Images.Any())
                 {
-                    <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div id="productCarousel" class="carousel slide border rounded shadow-sm" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             @for (int i = 0; i < Model.Images.Count; i++)
                             {
@@ -47,25 +56,52 @@
                             }
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon dark-icon" aria-hidden="true"></span>
+                            <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
                             <span class="visually-hidden">Prethodna</span>
                         </button>
                         <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon dark-icon" aria-hidden="true"></span>
+                            <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
                             <span class="visually-hidden">Sljedeća</span>
                         </button>
                     </div>
                 }
                 else
                 {
-                    <p class="text-muted">Nema slika za ovaj proizvod.</p>
+                    <p class="text-muted">Nema dostupnih slika za ovaj proizvod.</p>
                 }
             </div>
         </div>
 
-        <div class="d-flex justify-content-between">
-            <a asp-action="Index" class="btn btn-secondary">Natrag na popis</a>
+        <hr class="my-4" />
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <a asp-action="Index" class="btn btn-outline-secondary w-100 w-md-auto">
+                <i class="bi bi-arrow-left"></i> Natrag na popis
+            </a>
+            <button class="btn btn-success btn-add w-100 w-md-auto" data-id="@Model.Id">
+                <i class="bi bi-cart-plus"></i> Dodaj u košaricu
+            </button>
         </div>
     </div>
 </div>
 
+<div class="modal fade" id="confirmAddModal" tabindex="-1" role="dialog" aria-labelledby="confirmAddModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Potvrda dodavanja</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zatvori"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirmAddBtn">Dodaj</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Odustani</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/userDetails.js"></script>
