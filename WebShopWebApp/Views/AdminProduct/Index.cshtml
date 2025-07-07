@@ -6,26 +6,26 @@
 }
 
 <div class="container mt-4">
-    <h1 class="mb-4">Proizvodi</h1>
+    <h1 class="mb-4">Products</h1>
 
     <form asp-action="Index" method="GET" class="mb-4">
         <div class="row g-3 align-items-end">
             <div class="col-md-4">
-                <label asp-for="Q" class="form-label">Pretraži proizvode</label>
-                <input asp-for="Q" class="form-control" placeholder="Upiši pojam..." />
+                <label asp-for="Q" class="form-label">Search products</label>
+                <input asp-for="Q" class="form-control" placeholder="Enter product name..." />
             </div>
             <div class="col-md-3">
-                <label asp-for="OrderBy" class="form-label">Sortiraj po</label>
+                <label asp-for="OrderBy" class="form-label">Sort by</label>
                 <select asp-for="OrderBy" class="form-select">
                     <option value="id">(Default)</option>
-                    <option value="name">Naziv</option>
-                    <option value="price">Cijena</option>
-                    <option value="brand">Brend</option>
-                    <option value="category">Kategorija</option>
+                    <option value="name">Name</option>
+                    <option value="price">Price</option>
+                    <option value="brand">Brand</option>
+                    <option value="category">Category</option>
                 </select>
             </div>
             <div class="col-md-2">
-                <label asp-for="Size" class="form-label">Prikaži</label>
+                <label asp-for="Size" class="form-label">Show</label>
                 <select asp-for="Size" class="form-select">
                     <option>3</option>
                     <option>5</option>
@@ -35,13 +35,13 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <button type="submit" class="btn btn-primary w-100">Traži</button>
+                <button type="submit" class="btn btn-primary w-100">Search</button>
             </div>
         </div>
     </form>
 
     <div class="mb-3">
-        <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-circle"></i> Novi proizvod</a>
+        <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-circle"></i> New product</a>
     </div>
 
     <div class="table-responsive">
@@ -71,9 +71,9 @@
                         <td>@string.Join(", ", item.CountryNames)</td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                @Html.ActionLink("Uredi", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-primary" })
-                                @Html.ActionLink("Detalji", "Details", new { id = item.Id }, new { @class = "btn btn-outline-secondary" })
-                                @Html.ActionLink("Obriši", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger" })
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-primary" })
+                                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-secondary" })
+                                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger", @id = "btn-delete"})
                             </div>
                         </td>
                     </tr>
@@ -101,3 +101,24 @@
         </nav>
     }
 </div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">INFO</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/productAdmin.js"></script>

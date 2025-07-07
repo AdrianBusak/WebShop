@@ -14,10 +14,12 @@ namespace WebShopWebApp.ViewModels
 
         [Required(ErrorMessage = "First name is required")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "First name should be between 2 and 50 characters long")]
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
         [Required(ErrorMessage = "Last name is required")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name should be between 2 and 50 characters long")]
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
         [EmailAddress(ErrorMessage = "Provide a correct e-mail address")]
@@ -26,7 +28,9 @@ namespace WebShopWebApp.ViewModels
         [Phone(ErrorMessage = "Provide a correct phone number")]
         public string Phone { get; set; }
         public int RoleId { get; set; }
+        [Display(Name = "Password Admin")]
         public string? PasswordAdmin { get; set; }
+        [Display(Name = "Add Admin Role")]
         public bool AddAdmin { get; set; }
     }
 }

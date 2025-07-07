@@ -31,7 +31,7 @@ namespace WebShop.DAL.Services.CartServices
                 cart = new Cart
                 {
                     UserId = userId,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = DateTime.Now,
                     CartItems = new List<CartItem>()
                 };
                 _cartRepository.Add(cart);

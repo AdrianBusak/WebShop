@@ -297,5 +297,37 @@ namespace WebShopWebApi.Controllers
             }
 
         }
+
+        [HttpGet("search")]
+        public ActionResult<IEnumerable<ProductResponseDto>> SearchProducts(string query)
+        {
+            try
+            {
+                var products = _productService.GetAll()
+                    .Where(p => p.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                                (p.Description != null && p.Description.Contains(query, StringComparison.OrdinalIgnoreCase)))
+                    .Select(x => _mapper.Map<ProductResponseDto>(x))
+                    .ToList();
+                Log log = new Log()
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "INFO",
+                    Message = $"Searched products with query '{query}'."
+                };
+                _logService.Add(log);
+                return Ok(products);
+            }
+            catch (Exception)
+            {
+                Log errorLog = new Log()
+                {
+                    Timestamp = DateTime.Now,
+                    Level = "ERROR",
+                    Message = "An error occurred while searching for products."
+                };
+                _logService.Add(errorLog);
+                return StatusCode(500, "An error occurred while connecting to the database. Please try again later.");
+            }
+        }
     }
 }

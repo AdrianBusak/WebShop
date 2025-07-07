@@ -6,6 +6,7 @@ namespace WebShopWebApp.ViewModels
     {
         public int Id { get; set; }
         [Required]
+        [Display(Name = "Country Name")]
         public string Name { get; set; }
     }
 }

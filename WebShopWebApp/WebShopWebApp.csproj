@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Include="wwwroot\images\landing-page.jpg" />
+    <None Include="wwwroot\js\categoryAdmin.js" />
   </ItemGroup>
 
   <ItemGroup>

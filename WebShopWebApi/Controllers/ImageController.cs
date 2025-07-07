@@ -70,7 +70,7 @@ namespace WebShopWebApi.Controllers
                 var image = _mapper.Map<Image>(imageDto);
                 _imageService.Create(image);
 
-                return Ok(imageDto);
+                return CreatedAtAction(nameof(Get), new { id = image.Id }, imageDto);
             }
             catch (Exception)
             {

@@ -20,7 +20,6 @@ function jwtLogin() {
         $("#spinner-placeholder").removeClass("spinner");
         $("#login-button").prop("disabled", false);
 
-        // redirect
         window.location.href = "../Logs-site/logs.html";
     }).fail(function (err) {
         alert(err.responseText);
@@ -32,6 +31,5 @@ function jwtLogin() {
 function jwtLogout() {
     localStorage.removeItem("JWT");
 
-    // redirect
     window.location.href = "../Login/login.html";
 }

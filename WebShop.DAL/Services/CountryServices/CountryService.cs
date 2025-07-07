@@ -21,7 +21,12 @@ namespace WebShop.DAL.Services.CountryServices
         public List<Country> GetAll() => _countryRepo.GetAll();
         public Country? GetById(int id) => _countryRepo.GetById(id);
         public List<Country> GetForProduct(int productId) => _countryRepo.GetForProduct(productId);
-        public void Create(Country country) => _countryRepo.Add(country);
+        public void Create(Country country)
+        {
+            _countryRepo.Add(country);
+
+
+        }
         public Country? Update(Country updatedCategory)
         {
             var existing = _countryRepo.GetById(updatedCategory.Id);

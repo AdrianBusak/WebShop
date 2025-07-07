@@ -32,10 +32,17 @@ namespace WebShop.DAL.Services.CategoryServices
 
         public Category Create(Category category)
         {
+            bool exists = _repository.GetAll().Any(c => c.Name == category.Name);
+            if (exists)
+            {
+                throw new ArgumentException("Category already exists.");
+            }
+
             _repository.Add(category);
             _repository.SaveChanges();
             return category;
         }
+
 
         public Category? Update(int id, Category updatedCategory)
         {
