@@ -5,64 +5,72 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>Register</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h2 class="mb-4">Register</h2>
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Register">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Username" class="control-label"></label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" type="password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-check mb-2">
-                <input asp-for="AddAdmin" type="checkbox" class="form-check-input" id="add-admin-check">
-                <label asp-for="AddAdmin" class="form-check-label" for="add-admin-check"><b>Add admin</b></label>
-            </div>
+            <form asp-action="Register" class="border rounded p-4 shadow-sm bg-light">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-            <div class="form-group" id="password-admin-container" style="display: none;">
-                <label asp-for="PasswordAdmin" class="form-label"><b>Password for admin</b></label>
-                <input asp-for="PasswordAdmin" type="password" class="form-control" />
-                <span asp-validation-for="PasswordAdmin" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Register" class="btn btn-primary" />
-                <a class="btn btn-secondary" asp-action="Login">return to login</a>
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label"></label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
 
-            </div>
-        </form>
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Phone" class="form-label"></label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input asp-for="AddAdmin" type="checkbox" class="form-check-input" id="add-admin-check">
+                    <label asp-for="AddAdmin" class="form-check-label" for="add-admin-check"><strong>Add admin</strong></label>
+                </div>
+
+                <div class="mb-3" id="password-admin-container" style="display: none;">
+                    <label asp-for="PasswordAdmin" class="form-label"><strong>Password for admin</strong></label>
+                    <input asp-for="PasswordAdmin" type="password" class="form-control" />
+                    <span asp-validation-for="PasswordAdmin" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a class="btn btn-outline-secondary" asp-action="Login">Return to Login</a>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/register.js"></script>
 }
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="~/js/register.js"></script>
